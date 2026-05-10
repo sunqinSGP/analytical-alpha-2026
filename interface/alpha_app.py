@@ -271,7 +271,7 @@ if not ticker:
         <h2 style="font-size:1.5rem !important; font-weight:700; color:#0f172a; margin-bottom:6px;">
             Strategic Growth Investment Framework
         </h2>
-        <p style="font-size:0.9rem; color:#64748b; max-width:700px; margin:0 auto;">
+        <p style="font-size:0.9rem; color:#555; max-width:700px; margin:0 auto;">
             Nature-of-Business classification with six specialized valuation frameworks,
             Circumvention Delta moat architecture, and three Master Forward-Looking Indicators.
         </p>
@@ -285,7 +285,7 @@ if not ticker:
         <div class="alpha-card" style="text-align:center; min-height:130px;">
             <span style="font-size:1.5rem;"></span>
             <div class="label" style="margin-top:6px;">NoB Classification</div>
-            <div style="font-size:0.78rem;color:#475569;margin-top:4px;">
+            <div style="font-size:0.78rem;color:#444;margin-top:4px;">
             Auto-detects business model: SaaS, Semiconductor, Energy, Biopharma, Value, or Growth
             </div>
         </div>
@@ -295,7 +295,7 @@ if not ticker:
         <div class="alpha-card" style="text-align:center; min-height:130px;">
             <span style="font-size:1.5rem;"></span>
             <div class="label" style="margin-top:6px;">Circumvention Delta</div>
-            <div style="font-size:0.78rem;color:#475569;margin-top:4px;">
+            <div style="font-size:0.78rem;color:#444;margin-top:4px;">
             Quantifies competitive moat: Time + Capital + Performance Loss = total competitor burden
             </div>
         </div>
@@ -305,7 +305,7 @@ if not ticker:
         <div class="alpha-card" style="text-align:center; min-height:130px;">
             <span style="font-size:1.5rem;"></span>
             <div class="label" style="margin-top:6px;">Forward-Looking</div>
-            <div style="font-size:0.78rem;color:#475569;margin-top:4px;">
+            <div style="font-size:0.78rem;color:#444;margin-top:4px;">
             RPO divergence, NRR installed growth, and Forward Rule of 40 inflection detection
             </div>
         </div>
@@ -315,7 +315,7 @@ if not ticker:
         <div class="alpha-card" style="text-align:center; min-height:130px;">
             <span style="font-size:1.5rem;"></span>
             <div class="label" style="margin-top:6px;">2026 Macro Context</div>
-            <div style="font-size:0.78rem;color:#475569;margin-top:4px;">
+            <div style="font-size:0.78rem;color:#444;margin-top:4px;">
             K-shaped economy, value rotation, S&P 7,500 target, and barbell portfolio strategy
             </div>
         </div>
@@ -330,7 +330,7 @@ if not ticker:
             st.markdown(f"""
             <div class="alpha-card" style="text-align:center; border-top:3px solid {fw['color']};">
                 <div class="label">{fw['icon']} {fw['name']}</div>
-                <div style="font-size:0.72rem;color:#64748b;margin-top:4px;line-height:1.4;">{fw['metrics_focus']}</div>
+                <div style="font-size:0.72rem;color:#555;margin-top:4px;line-height:1.4;">{fw['metrics_focus']}</div>
             </div>
             """, unsafe_allow_html=True)
 
@@ -496,9 +496,9 @@ with t1:
 
     table_html = (
         '<table style="width:100%; border-collapse:collapse; font-family:Inter,sans-serif;">'
-        '<thead><tr style="border-bottom:2px solid #e2e8f0;">'
-        '<th style="padding:4px 10px; font-size:0.62rem; color:#94a3b8; text-transform:uppercase; letter-spacing:0.06em; text-align:left; width:160px;">Conviction Level</th>'
-        '<th style="padding:4px 10px; font-size:0.62rem; color:#94a3b8; text-transform:uppercase; letter-spacing:0.06em; text-align:left;">Criteria</th>'
+        '<thead><tr style="border-bottom:2px solid #d0d5dc;">'
+        '<th style="padding:4px 10px; font-size:0.62rem; color:#888; text-transform:uppercase; letter-spacing:0.06em; text-align:left; width:160px;">Conviction Level</th>'
+        '<th style="padding:4px 10px; font-size:0.62rem; color:#888; text-transform:uppercase; letter-spacing:0.06em; text-align:left;">Criteria</th>'
         '<th style="padding:4px 10px; text-align:right; width:60px;"></th>'
         '</tr></thead><tbody>'
         + '\n'.join(rows_html) +
@@ -508,7 +508,7 @@ with t1:
 
     # Thesis paragraph
     st.markdown("### Investment Thesis")
-    st.markdown(f'<div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:16px 20px;font-size:0.88rem;line-height:1.7;color:#334155;">{thesis["thesis"]}</div>', unsafe_allow_html=True)
+    st.markdown(f'<div style="background:#f7f9fb;border:1px solid #e2e8f0;border-radius:8px;padding:16px 20px;font-size:0.88rem;line-height:1.7;color:#334155;">{thesis["thesis"]}</div>', unsafe_allow_html=True)
 
     # Framework summary — compact table
     def fmt_pct(v):
@@ -597,14 +597,14 @@ with t1:
     summary_html = (
         '<table style="width:100%; border-collapse:collapse; font-family:Inter,sans-serif; margin:8px 0;">'
         '<colgroup><col style="width:28%"><col style="width:24%"><col style="width:24%"><col style="width:24%"></colgroup>'
-        '<thead><tr style="border-bottom:2px solid #e2e8f0;">'
-        '<th style="padding:5px 10px; font-size:0.62rem; color:#94a3b8; text-transform:uppercase; letter-spacing:0.06em; text-align:left;">'
+        '<thead><tr style="border-bottom:2px solid #d0d5dc;">'
+        '<th style="padding:5px 10px; font-size:0.62rem; color:#888; text-transform:uppercase; letter-spacing:0.06em; text-align:left;">'
         'Quantitative &mdash; ' + nob['name'] + '</th>'
-        '<th style="padding:5px 10px; font-size:0.62rem; color:#94a3b8; text-transform:uppercase; letter-spacing:0.06em; text-align:left;">'
+        '<th style="padding:5px 10px; font-size:0.62rem; color:#888; text-transform:uppercase; letter-spacing:0.06em; text-align:left;">'
         'Moat Architecture</th>'
-        '<th style="padding:5px 10px; font-size:0.62rem; color:#94a3b8; text-transform:uppercase; letter-spacing:0.06em; text-align:left;">'
+        '<th style="padding:5px 10px; font-size:0.62rem; color:#888; text-transform:uppercase; letter-spacing:0.06em; text-align:left;">'
         '2026 Thematic</th>'
-        '<th style="padding:5px 10px; font-size:0.62rem; color:#94a3b8; text-transform:uppercase; letter-spacing:0.06em; text-align:left;">'
+        '<th style="padding:5px 10px; font-size:0.62rem; color:#888; text-transform:uppercase; letter-spacing:0.06em; text-align:left;">'
         'Risk Framework</th>'
         '</tr></thead><tbody><tr style="vertical-align:top;">'
 
@@ -653,9 +653,9 @@ with t1:
                 c = '#059669' if v >= 0 else '#dc2626'
                 perf_items.append(f'<span style="font-weight:600; font-size:0.72rem;">{lbl}</span> <span style="color:{c}; font-weight:700; font-size:0.75rem;">{v:+.1f}%</span>')
         if '52w_high' in perf:
-            perf_items.append(f'<span style="font-weight:600; font-size:0.72rem;">52W</span> <span style="color:#64748b; font-size:0.72rem;">{cs}{perf["52w_low"]:.0f}&ndash;{cs}{perf["52w_high"]:.0f}</span>')
+            perf_items.append(f'<span style="font-weight:600; font-size:0.72rem;">52W</span> <span style="color:#555; font-size:0.72rem;">{cs}{perf["52w_low"]:.0f}&ndash;{cs}{perf["52w_high"]:.0f}</span>')
         st.markdown(
-            '<div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:6px; padding:6px 14px; margin:6px 0; display:flex; gap:20px; align-items:center;">'
+            '<div style="background:#f7f9fb; border:1px solid #e2e8f0; border-radius:6px; padding:6px 14px; margin:6px 0; display:flex; gap:20px; align-items:center;">'
             + '  '.join(perf_items) +
             '</div>',
             unsafe_allow_html=True
@@ -824,16 +824,16 @@ with t2:
         '<tr><td>Rule of 40 (EBITDA)</td><td>' + (f'{r40_ebitda:.0f}' if r40_ebitda is not None else 'N/A') + '</td><td>Rule of 40 (FCF)</td><td>' + (f'{r40_fcf:.0f}' if r40_fcf is not None else 'N/A') + '</td></tr>',
         '<tr><td>Gross Margin</td><td>' + fmt_pct(gm_pct) + '</td><td>ARR Growth</td><td>' + fmt_pct(arr_growth) + '</td></tr>',
         '<tr><td>Est. NRR</td><td>' + fmt_pct(nrr_pct) + '</td><td>Momentum</td><td>' + mom_rank + ' (' + f'{mom_score:+.0f}' + ')</td></tr>',
-        '<tr><td colspan="4" style="font-size:0.65rem; color:#64748b;">' + r40_assess + ' | ' + mom_signals + '</td></tr>',
+        '<tr><td colspan="4" style="font-size:0.65rem; color:#555;">' + r40_assess + ' | ' + mom_signals + '</td></tr>',
     ]
     core_table = (
         '<table style="width:100%; border-collapse:collapse; font-family:Inter,sans-serif; font-size:0.72rem; margin:8px 0;">'
         '<colgroup><col style="width:22%"><col style="width:28%"><col style="width:22%"><col style="width:28%"></colgroup>'
-        '<thead><tr style="border-bottom:2px solid #e2e8f0;">'
-        '<th style="padding:4px 10px; font-size:0.62rem; color:#94a3b8; text-transform:uppercase; letter-spacing:0.06em; text-align:left;">Metric</th>'
-        '<th style="padding:4px 10px; font-size:0.62rem; color:#94a3b8; text-transform:uppercase; letter-spacing:0.06em; text-align:left;">Value</th>'
-        '<th style="padding:4px 10px; font-size:0.62rem; color:#94a3b8; text-transform:uppercase; letter-spacing:0.06em; text-align:left;">Metric</th>'
-        '<th style="padding:4px 10px; font-size:0.62rem; color:#94a3b8; text-transform:uppercase; letter-spacing:0.06em; text-align:left;">Value</th>'
+        '<thead><tr style="border-bottom:2px solid #d0d5dc;">'
+        '<th style="padding:4px 10px; font-size:0.62rem; color:#888; text-transform:uppercase; letter-spacing:0.06em; text-align:left;">Metric</th>'
+        '<th style="padding:4px 10px; font-size:0.62rem; color:#888; text-transform:uppercase; letter-spacing:0.06em; text-align:left;">Value</th>'
+        '<th style="padding:4px 10px; font-size:0.62rem; color:#888; text-transform:uppercase; letter-spacing:0.06em; text-align:left;">Metric</th>'
+        '<th style="padding:4px 10px; font-size:0.62rem; color:#888; text-transform:uppercase; letter-spacing:0.06em; text-align:left;">Value</th>'
         '</tr></thead><tbody>' + '\n'.join(core_rows) + '</tbody></table>'
     )
     st.markdown(core_table, unsafe_allow_html=True)
@@ -978,12 +978,12 @@ with t3:
     moat_summary = (
         '<div style="display:flex; gap:16px; align-items:center; margin:8px 0;">'
         '<span style="font-weight:700; font-size:1rem; color:' + moat['moat_color'] + ';">Moat ' + str(moat_val) + '/10</span>'
-        '<span style="font-size:0.72rem; color:#64748b;">' + moat['moat_label'] + '</span>'
-        '<span style="font-size:0.68rem; color:#94a3b8;">|</span>'
+        '<span style="font-size:0.72rem; color:#555;">' + moat['moat_label'] + '</span>'
+        '<span style="font-size:0.68rem; color:#888;">|</span>'
         '<span style="font-weight:600; font-size:0.72rem; color:' + cd_color + ';">Circ.Delta ' + str(circumvention) + '/13</span>'
-        '<span style="font-size:0.68rem; color:#94a3b8;">|</span>'
+        '<span style="font-size:0.68rem; color:#888;">|</span>'
         '<span style="font-weight:600; font-size:0.72rem; color:' + perf_color + ';">' + perf_signal + '</span>'
-        '<span style="font-size:0.68rem; color:#94a3b8;">|</span>'
+        '<span style="font-size:0.68rem; color:#888;">|</span>'
         '<span style="font-weight:600; font-size:0.72rem; color:' + ai_color + ';">AI: ' + ai_depth_labels.get(ai_depth, 'None') + '</span>'
         '</div>'
     )
@@ -996,24 +996,24 @@ with t3:
     moat_table = (
         '<table style="width:100%; border-collapse:collapse; font-family:Inter,sans-serif; font-size:0.7rem; margin:6px 0;">'
         '<colgroup><col style="width:20%"><col style="width:8%"><col style="width:39%"><col style="width:33%"></colgroup>'
-        '<thead><tr style="border-bottom:2px solid #e2e8f0;">'
-        '<th style="padding:3px 8px; font-size:0.6rem; color:#94a3b8; text-transform:uppercase; letter-spacing:0.05em; text-align:left;">Dimension</th>'
-        '<th style="padding:3px 8px; font-size:0.6rem; color:#94a3b8; text-transform:uppercase; letter-spacing:0.05em; text-align:center;">Score</th>'
-        '<th style="padding:3px 8px; font-size:0.6rem; color:#94a3b8; text-transform:uppercase; letter-spacing:0.05em; text-align:left;">Assessment</th>'
-        '<th style="padding:3px 8px; font-size:0.6rem; color:#94a3b8; text-transform:uppercase; letter-spacing:0.05em; text-align:left;">Signals</th>'
+        '<thead><tr style="border-bottom:2px solid #d0d5dc;">'
+        '<th style="padding:3px 8px; font-size:0.6rem; color:#888; text-transform:uppercase; letter-spacing:0.05em; text-align:left;">Dimension</th>'
+        '<th style="padding:3px 8px; font-size:0.6rem; color:#888; text-transform:uppercase; letter-spacing:0.05em; text-align:center;">Score</th>'
+        '<th style="padding:3px 8px; font-size:0.6rem; color:#888; text-transform:uppercase; letter-spacing:0.05em; text-align:left;">Assessment</th>'
+        '<th style="padding:3px 8px; font-size:0.6rem; color:#888; text-transform:uppercase; letter-spacing:0.05em; text-align:left;">Signals</th>'
         '</tr></thead><tbody>'
         '<tr style="border-bottom:1px solid #f1f5f9;"><td style="padding:3px 8px; font-weight:600;">Temporal Width</td>'
         '<td style="padding:3px 8px; text-align:center; font-weight:700; color:' + t_c + ';">' + str(temporal['score']) + '/5</td>'
         '<td style="padding:3px 8px; font-size:0.65rem;">' + temporal['rating'] + '</td>'
-        '<td style="padding:3px 8px; font-size:0.63rem; color:#64748b;">' + ', '.join(temporal.get('signals', [])[:2]) + '</td></tr>'
+        '<td style="padding:3px 8px; font-size:0.63rem; color:#555;">' + ', '.join(temporal.get('signals', [])[:2]) + '</td></tr>'
         '<tr style="border-bottom:1px solid #f1f5f9;"><td style="padding:3px 8px; font-weight:600;">Efficiency Width</td>'
         '<td style="padding:3px 8px; text-align:center; font-weight:700; color:' + e_c + ';">' + str(efficiency['score']) + '/5</td>'
         '<td style="padding:3px 8px; font-size:0.65rem;">' + efficiency['rating'] + '</td>'
-        '<td style="padding:3px 8px; font-size:0.63rem; color:#64748b;">' + ', '.join(efficiency.get('signals', [])[:2]) + '</td></tr>'
+        '<td style="padding:3px 8px; font-size:0.63rem; color:#555;">' + ', '.join(efficiency.get('signals', [])[:2]) + '</td></tr>'
         '<tr><td style="padding:3px 8px; font-weight:600;">Trust Width</td>'
         '<td style="padding:3px 8px; text-align:center; font-weight:700; color:' + tr_c + ';">' + str(trust['score']) + '/5</td>'
         '<td style="padding:3px 8px; font-size:0.65rem;">' + trust['rating'] + '</td>'
-        '<td style="padding:3px 8px; font-size:0.63rem; color:#64748b;">' + ', '.join(trust.get('signals', [])[:2]) + '</td></tr>'
+        '<td style="padding:3px 8px; font-size:0.63rem; color:#555;">' + ', '.join(trust.get('signals', [])[:2]) + '</td></tr>'
         '</tbody></table>'
     )
     st.markdown(moat_table, unsafe_allow_html=True)
@@ -1139,11 +1139,11 @@ with t5:
     risk_table = (
         '<table style="width:100%; border-collapse:collapse; font-family:Inter,sans-serif; font-size:0.7rem; margin:6px 0;">'
         '<colgroup><col style="width:16%"><col style="width:34%"><col style="width:16%"><col style="width:34%"></colgroup>'
-        '<thead><tr style="border-bottom:2px solid #e2e8f0;">'
-        '<th style="padding:3px 8px; font-size:0.6rem; color:#94a3b8; text-transform:uppercase; letter-spacing:0.05em; text-align:left;">Parameter</th>'
-        '<th style="padding:3px 8px; font-size:0.6rem; color:#94a3b8; text-transform:uppercase; letter-spacing:0.05em; text-align:left;">Value</th>'
-        '<th style="padding:3px 8px; font-size:0.6rem; color:#94a3b8; text-transform:uppercase; letter-spacing:0.05em; text-align:left;">Parameter</th>'
-        '<th style="padding:3px 8px; font-size:0.6rem; color:#94a3b8; text-transform:uppercase; letter-spacing:0.05em; text-align:left;">Value</th>'
+        '<thead><tr style="border-bottom:2px solid #d0d5dc;">'
+        '<th style="padding:3px 8px; font-size:0.6rem; color:#888; text-transform:uppercase; letter-spacing:0.05em; text-align:left;">Parameter</th>'
+        '<th style="padding:3px 8px; font-size:0.6rem; color:#888; text-transform:uppercase; letter-spacing:0.05em; text-align:left;">Value</th>'
+        '<th style="padding:3px 8px; font-size:0.6rem; color:#888; text-transform:uppercase; letter-spacing:0.05em; text-align:left;">Parameter</th>'
+        '<th style="padding:3px 8px; font-size:0.6rem; color:#888; text-transform:uppercase; letter-spacing:0.05em; text-align:left;">Value</th>'
         '</tr></thead><tbody>' + '\n'.join(risk_rows) + '</tbody></table>'
     )
     st.markdown(risk_table, unsafe_allow_html=True)
@@ -1157,16 +1157,16 @@ with t5:
             '<tr><td style="font-weight:600;">' + rf['factor'] + '</td>'
             '<td><span style="font-size:0.6rem; font-weight:600; color:' + sev_c + ';">' + sev + '</span></td>'
             '<td style="font-size:0.65rem;">' + rf['detail'] + '</td>'
-            '<td style="font-size:0.63rem; color:#64748b;">' + rf['mitigation'] + '</td></tr>'
+            '<td style="font-size:0.63rem; color:#555;">' + rf['mitigation'] + '</td></tr>'
         )
     risk_factors_table = (
         '<table style="width:100%; border-collapse:collapse; font-family:Inter,sans-serif; font-size:0.7rem; margin:6px 0;">'
         '<colgroup><col style="width:18%"><col style="width:8%"><col style="width:38%"><col style="width:36%"></colgroup>'
-        '<thead><tr style="border-bottom:2px solid #e2e8f0;">'
-        '<th style="padding:3px 8px; font-size:0.6rem; color:#94a3b8; text-transform:uppercase; letter-spacing:0.05em; text-align:left;">Risk Factor</th>'
-        '<th style="padding:3px 8px; font-size:0.6rem; color:#94a3b8; text-transform:uppercase; letter-spacing:0.05em; text-align:left;">Sev</th>'
-        '<th style="padding:3px 8px; font-size:0.6rem; color:#94a3b8; text-transform:uppercase; letter-spacing:0.05em; text-align:left;">Detail</th>'
-        '<th style="padding:3px 8px; font-size:0.6rem; color:#94a3b8; text-transform:uppercase; letter-spacing:0.05em; text-align:left;">Mitigation</th>'
+        '<thead><tr style="border-bottom:2px solid #d0d5dc;">'
+        '<th style="padding:3px 8px; font-size:0.6rem; color:#888; text-transform:uppercase; letter-spacing:0.05em; text-align:left;">Risk Factor</th>'
+        '<th style="padding:3px 8px; font-size:0.6rem; color:#888; text-transform:uppercase; letter-spacing:0.05em; text-align:left;">Sev</th>'
+        '<th style="padding:3px 8px; font-size:0.6rem; color:#888; text-transform:uppercase; letter-spacing:0.05em; text-align:left;">Detail</th>'
+        '<th style="padding:3px 8px; font-size:0.6rem; color:#888; text-transform:uppercase; letter-spacing:0.05em; text-align:left;">Mitigation</th>'
         '</tr></thead><tbody>' + '\n'.join(risk_factor_rows) + '</tbody></table>'
     )
     st.markdown(risk_factors_table, unsafe_allow_html=True)
@@ -1188,11 +1188,11 @@ with t5:
     barbell_portfolio_table = (
         '<table style="width:100%; border-collapse:collapse; font-family:Inter,sans-serif; font-size:0.7rem; margin:6px 0;">'
         '<colgroup><col style="width:18%"><col style="width:32%"><col style="width:18%"><col style="width:32%"></colgroup>'
-        '<thead><tr style="border-bottom:2px solid #e2e8f0;">'
-        '<th style="padding:3px 8px; font-size:0.6rem; color:#94a3b8; text-transform:uppercase; letter-spacing:0.05em; text-align:left;">Barbell</th>'
-        '<th style="padding:3px 8px; font-size:0.6rem; color:#94a3b8; text-transform:uppercase; letter-spacing:0.05em; text-align:left;">Allocation</th>'
-        '<th style="padding:3px 8px; font-size:0.6rem; color:#94a3b8; text-transform:uppercase; letter-spacing:0.05em; text-align:left;">Valuation</th>'
-        '<th style="padding:3px 8px; font-size:0.6rem; color:#94a3b8; text-transform:uppercase; letter-spacing:0.05em; text-align:left;">Value</th>'
+        '<thead><tr style="border-bottom:2px solid #d0d5dc;">'
+        '<th style="padding:3px 8px; font-size:0.6rem; color:#888; text-transform:uppercase; letter-spacing:0.05em; text-align:left;">Barbell</th>'
+        '<th style="padding:3px 8px; font-size:0.6rem; color:#888; text-transform:uppercase; letter-spacing:0.05em; text-align:left;">Allocation</th>'
+        '<th style="padding:3px 8px; font-size:0.6rem; color:#888; text-transform:uppercase; letter-spacing:0.05em; text-align:left;">Valuation</th>'
+        '<th style="padding:3px 8px; font-size:0.6rem; color:#888; text-transform:uppercase; letter-spacing:0.05em; text-align:left;">Value</th>'
         '</tr></thead><tbody>'
         '<tr><td>High-Growth</td><td>' + str(segments.get('high_growth_pct', 0)) + '%</td>'
         '<td>Forward P/E</td><td style="font-weight:600;">' + (f'{fwd_pe:.1f}x' if fwd_pe and fwd_pe > 0 else 'N/A') + '</td></tr>'
@@ -1200,7 +1200,7 @@ with t5:
         '<td>Trailing P/E</td><td style="font-weight:600;">' + (f'{tpe:.1f}x' if tpe and tpe > 0 else 'N/A') + '</td></tr>'
         '<tr><td>Other</td><td>' + str(segments.get('other_pct', 0)) + '%</td>'
         '<td>FCF Yield</td><td style="font-weight:600;">' + (f'{fcf_yield_val:.1f}%' if fcf_yield_val is not None else 'N/A') + '</td></tr>'
-        '<tr><td colspan="2" style="font-size:0.63rem; color:#64748b;">' + barbell.get('message', '') + '</td>'
+        '<tr><td colspan="2" style="font-size:0.63rem; color:#555;">' + barbell.get('message', '') + '</td>'
         '<td>P/S</td><td>' + (f'{ps:.1f}x' if ps else 'N/A') + '</td></tr>'
         '</tbody></table>'
     )
@@ -1213,14 +1213,14 @@ with t6:
     # Portfolio recommendations table
     port_rows = []
     for p in portfolio:
-        port_rows.append('<tr><td style="font-weight:600;">' + p['rule'] + '</td><td>' + p['recommendation'] + '</td><td style="font-size:0.65rem; color:#64748b;">' + p['detail'] + '</td></tr>')
+        port_rows.append('<tr><td style="font-weight:600;">' + p['rule'] + '</td><td>' + p['recommendation'] + '</td><td style="font-size:0.65rem; color:#555;">' + p['detail'] + '</td></tr>')
     port_table = (
         '<table style="width:100%; border-collapse:collapse; font-family:Inter,sans-serif; font-size:0.7rem; margin:6px 0;">'
         '<colgroup><col style="width:16%"><col style="width:44%"><col style="width:40%"></colgroup>'
-        '<thead><tr style="border-bottom:2px solid #e2e8f0;">'
-        '<th style="padding:3px 8px; font-size:0.6rem; color:#94a3b8; text-transform:uppercase; letter-spacing:0.05em; text-align:left;">Rule</th>'
-        '<th style="padding:3px 8px; font-size:0.6rem; color:#94a3b8; text-transform:uppercase; letter-spacing:0.05em; text-align:left;">Recommendation</th>'
-        '<th style="padding:3px 8px; font-size:0.6rem; color:#94a3b8; text-transform:uppercase; letter-spacing:0.05em; text-align:left;">Detail</th>'
+        '<thead><tr style="border-bottom:2px solid #d0d5dc;">'
+        '<th style="padding:3px 8px; font-size:0.6rem; color:#888; text-transform:uppercase; letter-spacing:0.05em; text-align:left;">Rule</th>'
+        '<th style="padding:3px 8px; font-size:0.6rem; color:#888; text-transform:uppercase; letter-spacing:0.05em; text-align:left;">Recommendation</th>'
+        '<th style="padding:3px 8px; font-size:0.6rem; color:#888; text-transform:uppercase; letter-spacing:0.05em; text-align:left;">Detail</th>'
         '</tr></thead><tbody>' + '\n'.join(port_rows) + '</tbody></table>'
     )
     st.markdown(port_table, unsafe_allow_html=True)
@@ -1262,9 +1262,9 @@ with t7:
             )
     table_t7 = (
         '<table style="width:100%; border-collapse:collapse; font-family:Inter,sans-serif; margin-bottom:12px;">'
-        '<thead><tr style="border-bottom:2px solid #e2e8f0;">'
-        '<th style="padding:3px 8px; font-size:0.6rem; color:#94a3b8; text-transform:uppercase; letter-spacing:0.06em; text-align:left;">Conviction</th>'
-        '<th style="padding:3px 8px; font-size:0.6rem; color:#94a3b8; text-transform:uppercase; letter-spacing:0.06em; text-align:left;">Criteria</th>'
+        '<thead><tr style="border-bottom:2px solid #d0d5dc;">'
+        '<th style="padding:3px 8px; font-size:0.6rem; color:#888; text-transform:uppercase; letter-spacing:0.06em; text-align:left;">Conviction</th>'
+        '<th style="padding:3px 8px; font-size:0.6rem; color:#888; text-transform:uppercase; letter-spacing:0.06em; text-align:left;">Criteria</th>'
         '<th style="padding:3px 8px; text-align:right; width:55px;"></th>'
         '</tr></thead><tbody>' + '\n'.join(rows_t7) + '</tbody></table>'
     )
@@ -1272,7 +1272,7 @@ with t7:
 
     # Full thesis
     st.markdown("#### One-Paragraph Thesis")
-    st.markdown(f'<div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:6px;padding:16px 20px;font-size:0.9rem;line-height:1.6;color:#334155;">{thesis["thesis"]}</div>', unsafe_allow_html=True)
+    st.markdown(f'<div style="background:#f7f9fb;border:1px solid #e2e8f0;border-radius:6px;padding:16px 20px;font-size:0.9rem;line-height:1.6;color:#334155;">{thesis["thesis"]}</div>', unsafe_allow_html=True)
 
     # Factor attribution (SHAP-style simplified)
     st.markdown("---")
