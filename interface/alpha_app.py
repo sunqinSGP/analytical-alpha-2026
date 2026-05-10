@@ -674,66 +674,120 @@ with t2:
 
     st.markdown("---")
     st.markdown("####  3 Master Forward-Looking Indicators")
-    st.caption('"The market prices stocks based on future cash flows. These three indicators help you see what\'s coming before the rest of the market."')
+    st.caption('"The market prices stocks on future cash flows. These indicators reveal what is coming before the market notices."')
 
     fi1, fi2, fi3 = st.columns(3)
 
+    # ---- RPO Indicator ----
+    rpo_signal = rpo_data.get('leading_indicator_signal')
+    rpo_growth = rpo_data.get('rpo_growth_pct')
+    if rpo_signal == 'STRONG LEAD': rpo_color = '#0d8a3e'; rpo_bg = '#c8f7d5'
+    elif rpo_signal == 'LAGGING': rpo_color = '#c62828'; rpo_bg = '#ffcdd2'
+    elif rpo_signal == 'MODEST LEAD': rpo_color = '#1a3a6b'; rpo_bg = '#d0dff7'
+    else: rpo_color = '#6a1b9a'; rpo_bg = '#e1bee7'
+    rev_growth_pct = rpo_data.get('revenue_growth_pct')
+    rpo_icon = '' if rpo_signal == 'STRONG LEAD' else ('' if rpo_signal == 'LAGGING' else '')
+    rpo_sig_str = rpo_signal if rpo_signal else 'N/A'
+
     with fi1:
-        # RPO Indicator
-        rpo_signal = rpo_data.get('leading_indicator_signal')
-        rpo_growth = rpo_data.get('rpo_growth_pct')
-        rpo_color = "#16a34a" if rpo_signal == "STRONG LEAD" else ("#ea580c" if rpo_signal == "LAGGING" else "#3b82f6")
-        rev_growth_pct = rpo_data.get('revenue_growth_pct')
-        rpo_badge = '<span style="background:' + rpo_color + '; color:#fff; padding:1px 6px; border-radius:3px; font-size:0.6rem; font-weight:700;">' + (rpo_signal if rpo_signal else 'N/A') + '</span>'
         st.markdown(
-            '<table style="width:100%; border-collapse:collapse; font-family:Inter,sans-serif; font-size:0.7rem;">'
-            '<tr style="border-bottom:1px solid #e2e8f0;"><td style="padding:4px 0; color:#64748b; width:100px;">RPO Growth</td><td style="padding:4px 0; font-weight:600;">' + fmt_pct(rpo_growth) + '</td></tr>'
-            '<tr style="border-bottom:1px solid #e2e8f0;"><td style="padding:4px 0; color:#64748b;">vs Rev Growth</td><td style="padding:4px 0; font-weight:600;">' + fmt_pct(rev_growth_pct) + '</td></tr>'
-            '<tr><td style="padding:4px 0; color:#64748b;">Signal</td><td style="padding:4px 0;">' + rpo_badge + '</td></tr>'
-            '</table>',
+            '<div class="kpi" style="border-left:5px solid ' + rpo_color + '; padding:16px 18px; min-height:220px;">'
+            '<div style="display:flex; align-items:center; gap:8px; margin-bottom:10px;">'
+            '<span style="font-size:1.4rem;">' + rpo_icon + '</span>'
+            '<span class="kpi-label" style="margin:0;">Remaining Performance Obligations</span>'
+            '</div>'
+            '<div style="display:flex; align-items:baseline; gap:10px; margin-bottom:6px;">'
+            '<span class="kpi-value" style="color:' + rpo_color + ';">' + fmt_pct(rpo_growth) + '</span>'
+            '<span style="font-size:0.7rem; color:#888; font-weight:600;">RPO Growth</span>'
+            '</div>'
+            '<div style="display:flex; align-items:baseline; gap:10px; margin-bottom:10px;">'
+            '<span style="font-size:1rem; font-weight:700; color:#444;">' + fmt_pct(rev_growth_pct) + '</span>'
+            '<span style="font-size:0.68rem; color:#888;">vs Revenue Growth</span>'
+            '</div>'
+            '<span style="background:' + rpo_bg + '; color:' + rpo_color + '; padding:4px 12px; border-radius:14px; font-size:0.7rem; font-weight:700;">'
+            + rpo_icon + ' ' + rpo_sig_str +
+            '</span>'
+            '<div style="font-size:0.65rem; color:#999; margin-top:8px;">RPO &gt; Revenue = acceleration ahead</div>'
+            '</div>',
             unsafe_allow_html=True
         )
         if rpo_data.get('signal_detail'):
             st.caption(rpo_data['signal_detail'])
 
+    # ---- NRR Indicator ----
+    nrr_growth = nrr.get('estimated_nrr_pct')
+    if nrr_growth is not None and nrr_growth >= 120: nrr_color = '#0d8a3e'; nrr_bg = '#c8f7d5'; nrr_icon = ''
+    elif nrr_growth is not None and nrr_growth >= 106: nrr_color = '#1a3a6b'; nrr_bg = '#d0dff7'; nrr_icon = ''
+    elif nrr_growth is not None and nrr_growth >= 100: nrr_color = '#e65100'; nrr_bg = '#ffe0b2'; nrr_icon = ''
+    else: nrr_color = '#c62828'; nrr_bg = '#ffcdd2'; nrr_icon = ''
+    nrr_val = f'{nrr_growth:.0f}%' if nrr_growth is not None else 'N/A'
+    if nrr_growth is not None and nrr_growth >= 100:
+        nrr_impact = f'Grows {nrr_growth - 100:.0f}% with zero new customers'
+    else:
+        nrr_impact = 'Existing base is shrinking'
+
     with fi2:
-        nrr_growth = nrr.get('estimated_nrr_pct')
-        if nrr_growth is not None and nrr_growth >= 120: nrr_color_fi = "#059669"
-        elif nrr_growth is not None and nrr_growth >= 106: nrr_color_fi = "#16a34a"
-        elif nrr_growth is not None and nrr_growth >= 100: nrr_color_fi = "#ea580c"
-        else: nrr_color_fi = "#dc2626"
-        nrr_val_str = f'{nrr_growth:.0f}%' if nrr_growth is not None else 'N/A'
-        if nrr_growth is not None and nrr_growth >= 100:
-            growth_detail = f"At {nrr_growth:.0f}% NRR, grows {nrr_growth - 100:.0f}% even with ZERO new customers"
-        else:
-            growth_detail = "NRR below 100% means existing base is shrinking"
         st.markdown(
-            '<div style="font-size:1rem; font-weight:700; color:' + nrr_color_fi + '; margin-bottom:4px;">' + nrr_val_str + '</div>'
-            '<table style="width:100%; border-collapse:collapse; font-family:Inter,sans-serif; font-size:0.7rem;">'
-            '<tr style="border-bottom:1px solid #e2e8f0;"><td style="padding:4px 0; color:#64748b; width:90px;">Benchmark</td><td style="padding:4px 0; font-weight:600;">&ge;106%</td></tr>'
-            '<tr style="border-bottom:1px solid #e2e8f0;"><td style="padding:4px 0; color:#64748b;">Installed Growth</td><td style="padding:4px 0; font-weight:600;">&ge;120%</td></tr>'
-            '<tr><td style="padding:4px 0; color:#64748b;">Impact</td><td style="padding:4px 0; font-size:0.65rem; color:#64748b;">' + growth_detail + '</td></tr>'
-            '</table>',
+            '<div class="kpi" style="border-left:5px solid ' + nrr_color + '; padding:16px 18px; min-height:220px;">'
+            '<div style="display:flex; align-items:center; gap:8px; margin-bottom:10px;">'
+            '<span style="font-size:1.4rem;">' + nrr_icon + '</span>'
+            '<span class="kpi-label" style="margin:0;">Net Retention Rate</span>'
+            '</div>'
+            '<div style="display:flex; align-items:baseline; gap:10px; margin-bottom:6px;">'
+            '<span class="kpi-value" style="color:' + nrr_color + ';">' + nrr_val + '</span>'
+            '<span style="font-size:0.7rem; color:#888; font-weight:600;">NRR</span>'
+            '</div>'
+            '<div style="margin-bottom:10px;">'
+            '<span style="background:' + nrr_bg + '; color:' + nrr_color + '; padding:4px 12px; border-radius:14px; font-size:0.7rem; font-weight:700;">'
+            + nrr_icon + ' ' + (nrr.get('assessment', 'N/A')[:30] if nrr.get('assessment') else 'N/A') +
+            '</span>'
+            '</div>'
+            '<div style="font-size:0.68rem; color:#555; font-weight:600; line-height:1.4;">' + nrr_impact + '</div>'
+            '<div style="font-size:0.63rem; color:#999; margin-top:6px;">Benchmark &ge;106% | Installed growth &ge;120%</div>'
+            '</div>',
             unsafe_allow_html=True
         )
 
+    # ---- Forward Rule of 40 Indicator ----
+    fwd_r40_val = fwd_r40.get('forward_rule_40')
+    trail_r40_val = fwd_r40.get('trailing_rule_40')
+    inflection = fwd_r40.get('inflection_signal', '')
+    if inflection in ('MASSIVE INFLECTION', 'POSITIVE INFLECTION', 'BENCHMARK CROSSOVER'):
+        fwd_color = '#0d8a3e'; fwd_bg = '#c8f7d5'; fwd_icon = ''
+    elif inflection in ('NEGATIVE INFLECTION', 'SEVERE DECLINE'):
+        fwd_color = '#c62828'; fwd_bg = '#ffcdd2'; fwd_icon = ''
+    elif inflection == 'TRAILING ONLY':
+        fwd_color = '#6a1b9a'; fwd_bg = '#e1bee7'; fwd_icon = ''
+    else:
+        fwd_color = '#1a3a6b'; fwd_bg = '#d0dff7'; fwd_icon = ''
+    fwd_val = f'{fwd_r40_val:.0f}' if fwd_r40_val is not None else 'N/A'
+    if trail_r40_val is not None and fwd_r40_val is not None:
+        gap = fwd_r40_val - trail_r40_val
+        fwd_subtitle = ('+' if gap > 0 else '') + f'{gap:.0f} vs trailing'
+    else:
+        fwd_subtitle = ''
+
     with fi3:
-        fwd_r40_val = fwd_r40.get('forward_rule_40')
-        trail_r40_val = fwd_r40.get('trailing_rule_40')
-        inflection = fwd_r40.get('inflection_signal', '')
-        if inflection in ('MASSIVE INFLECTION', 'POSITIVE INFLECTION', 'BENCHMARK CROSSOVER'): fwd_color = "#059669"
-        elif inflection in ('NEGATIVE INFLECTION', 'SEVERE DECLINE'): fwd_color = "#dc2626"
-        else: fwd_color = "#3b82f6"
-        fwd_val_str = f'{fwd_r40_val:.0f}' if fwd_r40_val is not None else 'N/A'
-        if trail_r40_val is not None:
-            fwd_val_str += f' vs {trail_r40_val:.0f} trailing'
         st.markdown(
-            '<div style="font-size:1rem; font-weight:700; color:' + fwd_color + '; margin-bottom:4px;">' + fwd_val_str + '</div>'
-            '<table style="width:100%; border-collapse:collapse; font-family:Inter,sans-serif; font-size:0.7rem;">'
-            '<tr style="border-bottom:1px solid #e2e8f0;"><td style="padding:4px 0; color:#64748b; width:90px;">Fwd Rev</td><td style="padding:4px 0; font-weight:600;">' + fmt_pct(fwd_r40.get('forward_rev_growth_pct')) + '</td></tr>'
-            '<tr style="border-bottom:1px solid #e2e8f0;"><td style="padding:4px 0; color:#64748b;">Fwd FCF Margin</td><td style="padding:4px 0; font-weight:600;">' + fmt_pct(fwd_r40.get('forward_fcf_margin_pct')) + '</td></tr>'
-            '<tr><td style="padding:4px 0; color:#64748b;">Signal</td><td style="padding:4px 0;"><span style="font-size:0.65rem; font-weight:600; color:' + fwd_color + ';">' + (inflection if inflection else 'N/A') + '</span></td></tr>'
-            '</table>',
+            '<div class="kpi" style="border-left:5px solid ' + fwd_color + '; padding:16px 18px; min-height:220px;">'
+            '<div style="display:flex; align-items:center; gap:8px; margin-bottom:10px;">'
+            '<span style="font-size:1.4rem;">' + fwd_icon + '</span>'
+            '<span class="kpi-label" style="margin:0;">Forward Rule of 40</span>'
+            '</div>'
+            '<div style="display:flex; align-items:baseline; gap:10px; margin-bottom:4px;">'
+            '<span class="kpi-value" style="color:' + fwd_color + ';">' + fwd_val + '</span>'
+            '<span style="font-size:0.7rem; color:#888; font-weight:600;">Forward R40</span>'
+            '</div>'
+            + ('<div style="font-size:0.8rem; font-weight:700; color:#555; margin-bottom:8px;">' + fwd_subtitle + '</div>' if fwd_subtitle else '') +
+            '<div style="margin-bottom:10px;">'
+            '<span style="background:' + fwd_bg + '; color:' + fwd_color + '; padding:4px 12px; border-radius:14px; font-size:0.7rem; font-weight:700;">'
+            + fwd_icon + ' ' + (inflection if inflection else 'N/A') +
+            '</span>'
+            '</div>'
+            '<div style="font-size:0.68rem; color:#555; font-weight:600; line-height:1.4;">Fwd Rev: ' + fmt_pct(fwd_r40.get('forward_rev_growth_pct')) +
+            ' | FCF Mgn: ' + fmt_pct(fwd_r40.get('forward_fcf_margin_pct')) + '</div>'
+            '<div style="font-size:0.63rem; color:#999; margin-top:6px;">Trailing &lt;40 + Forward &ge;40 = buy signal</div>'
+            '</div>',
             unsafe_allow_html=True
         )
 
