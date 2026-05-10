@@ -62,26 +62,46 @@ st.markdown("""
         border-bottom: 3px solid #2563eb !important;
     }
 
-    /* === KPI CARDS === */
+    /* === KPI CARDS — Corporate Memphis Dashboard === */
     .kpi {
-        background: #fff; border-radius: 12px; padding: 16px 18px;
-        box-shadow: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
-        border: 1px solid #e8ecf1; transition: box-shadow 0.2s ease, transform 0.2s ease, border-color 0.2s ease;
+        background: #fff; border-radius: 16px; padding: 18px 20px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.04), 0 0 0 1px rgba(0,0,0,0.02);
+        border: 2px solid transparent; transition: box-shadow 0.2s ease, transform 0.2s ease, border-color 0.2s ease;
+        position: relative; overflow: hidden;
     }
-    .kpi:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.08); transform: translateY(-1px); }
-    .kpi .kpi-label { font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.7px; color: #94a3b8; margin-bottom: 5px; }
-    .kpi .kpi-value { font-size: 1.4rem; font-weight: 800; color: #0f172a; line-height: 1.2; }
-    .kpi .kpi-sub { font-size: 0.75rem; font-weight: 500; color: #94a3b8; margin-top: 3px; }
-    .kpi.signal-green { border-left: 4px solid #10b981; background: linear-gradient(135deg, #fff 0%, #f0fdf6 100%); }
+    .kpi::after {
+        content: ''; position: absolute; top: 0; right: 0; width: 60px; height: 60px;
+        border-radius: 0 16px 0 100%; opacity: 0.06; pointer-events: none;
+    }
+    .kpi:hover { box-shadow: 0 8px 24px rgba(0,0,0,0.08); transform: translateY(-2px); border-color: #e2e8f0; }
+    .kpi .kpi-label { font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; color: #64748b; margin-bottom: 6px; }
+    .kpi .kpi-value { font-size: 1.5rem; font-weight: 800; color: #0f172a; line-height: 1.1; }
+    .kpi .kpi-sub { font-size: 0.72rem; font-weight: 600; color: #94a3b8; margin-top: 4px; }
+    .kpi.signal-green { border-top: 3px solid #10b981; }
+    .kpi.signal-green::after { background: #10b981; }
     .kpi.signal-green .kpi-value { color: #059669; }
-    .kpi.signal-amber { border-left: 4px solid #f59e0b; background: linear-gradient(135deg, #fff 0%, #fffbeb 100%); }
+    .kpi.signal-amber { border-top: 3px solid #f59e0b; }
+    .kpi.signal-amber::after { background: #f59e0b; }
     .kpi.signal-amber .kpi-value { color: #d97706; }
-    .kpi.signal-red { border-left: 4px solid #ef4444; background: linear-gradient(135deg, #fff 0%, #fef2f2 100%); }
+    .kpi.signal-red { border-top: 3px solid #ef4444; }
+    .kpi.signal-red::after { background: #ef4444; }
     .kpi.signal-red .kpi-value { color: #dc2626; }
-    .kpi.signal-blue { border-left: 4px solid #3b82f6; background: linear-gradient(135deg, #fff 0%, #eff6ff 100%); }
+    .kpi.signal-blue { border-top: 3px solid #3b82f6; }
+    .kpi.signal-blue::after { background: #3b82f6; }
     .kpi.signal-blue .kpi-value { color: #2563eb; }
-    .kpi.signal-purple { border-left: 4px solid #8b5cf6; background: linear-gradient(135deg, #fff 0%, #f5f3ff 100%); }
+    .kpi.signal-purple { border-top: 3px solid #8b5cf6; }
+    .kpi.signal-purple::after { background: #8b5cf6; }
     .kpi.signal-purple .kpi-value { color: #7c3aed; }
+
+    /* === BENTO GRID for dashboard panels === */
+    .bento-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin: 12px 0; }
+    .bento-card {
+        background: #fff; border-radius: 16px; padding: 18px 22px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.04); border: 1px solid #f1f5f9;
+        transition: box-shadow 0.2s ease;
+    }
+    .bento-card:hover { box-shadow: 0 6px 18px rgba(0,0,0,0.06); }
+    .bento-card .bento-title { font-size: 0.75rem; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 10px; }
 
     /* === HEALTH SIGNAL CARDS (StockOracle style) === */
     .health-card {
@@ -521,10 +541,10 @@ with t1:
 
     table_html = (
         '<table style="width:100%; border-collapse:collapse; font-family:Inter,sans-serif;">'
-        '<thead><tr style="border-bottom:2px solid #d0d5dc;">'
-        '<th style="padding:4px 10px; font-size:0.62rem; color:#888; text-transform:uppercase; letter-spacing:0.06em; text-align:left; width:160px;">Conviction Level</th>'
-        '<th style="padding:4px 10px; font-size:0.62rem; color:#888; text-transform:uppercase; letter-spacing:0.06em; text-align:left;">Criteria</th>'
-        '<th style="padding:4px 10px; text-align:right; width:60px;"></th>'
+        '<thead><tr style="border-bottom:2px solid #e2e8f0;">'
+        '<th style="padding:5px 12px; font-size:0.7rem; font-weight:700; color:#64748b; text-transform:uppercase; letter-spacing:0.05em; text-align:left; width:160px;">Conviction</th>'
+        '<th style="padding:5px 12px; font-size:0.7rem; font-weight:700; color:#64748b; text-transform:uppercase; letter-spacing:0.05em; text-align:left;">Criteria</th>'
+        '<th style="padding:5px 12px; text-align:right; width:65px;"></th>'
         '</tr></thead><tbody>'
         + '\n'.join(rows_html) +
         '</tbody></table>'
