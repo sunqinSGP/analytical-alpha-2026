@@ -21,283 +21,223 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
-# Professional CSS
+# FinancialPlanner-style CSS
 st.markdown("""
 <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Segoe+UI:wght@300;400;500;600;700;800&display=swap');
 
     /* === ROOT & RESET === */
+    * { box-sizing: border-box; }
     html, body, [class*="css"] {
-        font-size: 14px;
-        font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        font-size: 13px;
+        font-family: 'Segoe UI', Arial, sans-serif;
         line-height: 1.5;
-        color: #1e293b;
-        background: #f1f5f9;
+        color: #1a1a2e;
+        background: #f0f2f5;
     }
 
-    /* === HIDE SIDEBAR & ADJUST APP === */
+    /* === HIDE SIDEBAR === */
     section[data-testid="stSidebar"] { display: none; }
-    .stApp { margin-top: -2rem; background: #f1f5f9; }
-    div[data-testid="stVerticalBlock"] { gap: 0.25rem; }
+    .stApp { margin-top: -2rem; background: #f0f2f5; }
+    div[data-testid="stVerticalBlock"] { gap: 0.3rem; }
     div[data-testid="stMetricValue"] { font-size: 1rem !important; }
     div[data-testid="stMetricLabel"] { font-size: 0.7rem !important; }
 
     /* === TYPOGRAPHY === */
-    h1 { font-size: 1.3rem !important; font-weight: 700 !important; letter-spacing: -0.015em; color: #0f172a; margin: 0 !important; }
-    h2 { font-size: 1.05rem !important; font-weight: 600 !important; color: #1e293b; margin-top: 0.4rem !important; margin-bottom: 0.25rem !important; }
-    h3 { font-size: 0.9rem !important; font-weight: 600 !important; color: #334155; margin-top: 0.3rem !important; margin-bottom: 0.15rem !important; }
-    .dim { color: #94a3b8; font-size: 0.7rem; }
+    h1 { font-size: 1.2rem !important; font-weight: 700 !important; color: #1F3864; margin: 0 !important; }
+    h2 { font-size: 1.05rem !important; font-weight: 700 !important; color: #1F3864; margin: 16px 0 10px 0 !important; }
+    h3 { font-size: 0.9rem !important; font-weight: 600 !important; color: #2E5496; margin: 12px 0 6px 0 !important; }
+
+    /* === NAVY HEADER === */
+    .stApp > header { background: linear-gradient(135deg, #1F3864, #2E5496) !important; }
 
     /* === TABS === */
     .stTabs [data-baseweb="tab-list"] {
-        gap: 0;
-        border-bottom: 1px solid #e2e8f0;
+        gap: 2px;
+        border-bottom: 1px solid #e0e4ea;
         background: transparent;
+        padding: 0 4px;
     }
     .stTabs [data-baseweb="tab"] {
-        font-size: 0.75rem !important;
-        padding: 8px 18px !important;
+        font-size: 0.73rem !important;
+        padding: 9px 16px !important;
         font-weight: 500;
-        color: #64748b;
+        color: #777;
         border-radius: 6px 6px 0 0 !important;
-        margin-right: 2px;
+        margin-right: 1px;
+        border-bottom: 3px solid transparent !important;
     }
     .stTabs [data-baseweb="tab"][aria-selected="true"] {
-        color: #0f172a;
+        color: #1F3864;
         font-weight: 600;
-        background: #ffffff;
-        border: 1px solid #e2e8f0;
-        border-bottom: 2px solid #ffffff;
+        background: #fff;
+        border-bottom: 3px solid #2E5496 !important;
     }
 
     /* === METRIC CARDS === */
     .alpha-card {
-        background: #ffffff;
-        border: 1px solid #e2e8f0;
-        border-radius: 8px;
-        padding: 12px 14px;
-        box-shadow: 0 1px 2px rgba(0,0,0,0.03);
-        transition: all 0.2s ease;
+        background: #fff;
+        border: none;
+        border-radius: 10px;
+        padding: 16px 14px;
+        box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+        border-left: 4px solid #2E5496;
+        transition: transform 0.15s;
         height: 100%;
-        margin-bottom: 6px;
-        word-wrap: break-word;
-        overflow-wrap: break-word;
+        margin-bottom: 8px;
     }
-    .alpha-card:hover {
-        box-shadow: 0 4px 16px rgba(0,0,0,0.06);
-        border-color: #cbd5e1;
-        transform: translateY(-1px);
-    }
+    .alpha-card:hover { transform: translateY(-1px); }
     .alpha-card .label {
-        font-size: 0.6rem;
-        color: #94a3b8;
+        font-size: 0.62rem;
+        color: #888;
         text-transform: uppercase;
-        letter-spacing: 0.1em;
+        letter-spacing: 0.7px;
         font-weight: 600;
-        margin-bottom: 4px;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
+        margin-bottom: 5px;
     }
     .alpha-card .value {
-        font-size: 1.2rem;
+        font-size: 1.3rem;
         font-weight: 700;
-        color: #0f172a;
+        color: #1F3864;
         line-height: 1.2;
-        overflow: hidden;
-        text-overflow: ellipsis;
     }
     .alpha-card .sub {
         font-size: 0.65rem;
-        color: #64748b;
+        color: #aaa;
         margin-top: 3px;
-        line-height: 1.3;
-        overflow: hidden;
-        text-overflow: ellipsis;
     }
-
-    /* === SECTION SPACING === */
-    .section-spacer { height: 12px; }
-    .stMarkdown { margin-bottom: 4px !important; }
-    .stCaption { margin-top: 2px !important; margin-bottom: 6px !important; }
-
-    /* === PREVENT OVERLAP === */
-    div[data-testid="stVerticalBlock"] > div[data-testid="stVerticalBlock"] {
-        gap: 0.5rem !important;
-    }
-    div[data-testid="column"] {
-        padding: 0 4px;
-    }
-    .st-emotion-cache-0 { word-wrap: break-word; }
-    p { margin-bottom: 4px !important; }
-
-    /* === TAB CONTENT PADDING === */
-    div[data-testid="stTabs"] { margin-top: 8px; }
-    div[data-baseweb="tab-panel"] { padding-top: 8px !important; }
 
     /* === VERDICT BANNERS === */
-    .verdict {
-        padding: 16px 22px;
-        border-radius: 8px;
-        margin: 14px 0;
-        font-size: 0.88rem;
-        line-height: 1.5;
-    }
-    .verdict.conviction-high {
-        background: linear-gradient(135deg, #ecfdf5 0%, #f0fdf4 100%);
-        border: 1px solid #a7f3d0;
-        border-left: 4px solid #059669;
-    }
-    .verdict.conviction-moderate {
-        background: linear-gradient(135deg, #eff6ff 0%, #f0f9ff 100%);
-        border: 1px solid #bfdbfe;
-        border-left: 4px solid #2563eb;
-    }
-    .verdict.conviction-selective {
-        background: linear-gradient(135deg, #fff7ed 0%, #fffbf5 100%);
-        border: 1px solid #fed7aa;
-        border-left: 4px solid #ea580c;
-    }
-    .verdict.conviction-opportunistic {
-        background: linear-gradient(135deg, #fefce8 0%, #fffbeb 100%);
-        border: 1px solid #fde68a;
-        border-left: 4px solid #ca8a04;
-    }
-    .verdict.conviction-pass {
-        background: linear-gradient(135deg, #fef2f2 0%, #fff5f5 100%);
-        border: 1px solid #fecaca;
-        border-left: 4px solid #dc2626;
-    }
+    .verdict { padding: 14px 20px; border-radius: 10px; margin: 12px 0; font-size: 0.85rem; }
+    .verdict.conviction-high { background: #D5F5E3; border-left: 4px solid #1E8449; }
+    .verdict.conviction-moderate { background: #EBF0FA; border-left: 4px solid #2E5496; }
+    .verdict.conviction-selective { background: #FEF9E7; border-left: 4px solid #D68910; }
+    .verdict.conviction-opportunistic { background: #FFF9C4; border-left: 4px solid #B7950B; }
+    .verdict.conviction-pass { background: #FDECEA; border-left: 4px solid #C0392B; }
 
     /* === TAGS === */
-    .tag {
-        display: inline-block;
-        padding: 3px 10px;
-        border-radius: 4px;
-        font-size: 0.65rem;
-        font-weight: 600;
-        letter-spacing: 0.03em;
-    }
-    .tag.green { background: #dcfce7; color: #166534; }
-    .tag.red { background: #fee2e2; color: #991b1b; }
-    .tag.amber { background: #ffedd5; color: #9a3412; }
-    .tag.blue { background: #dbeafe; color: #1e40af; }
-    .tag.purple { background: #f3e8ff; color: #6b21a8; }
-    .tag.gray { background: #f1f5f9; color: #475569; }
+    .tag { display: inline-block; padding: 3px 9px; border-radius: 12px; font-size: 0.63rem; font-weight: 600; }
+    .tag.green { background: #D5F5E3; color: #1E8449; }
+    .tag.red { background: #FDECEA; color: #C0392B; }
+    .tag.amber { background: #FEF9E7; color: #D68910; }
+    .tag.blue { background: #EBF0FA; color: #2E5496; }
+    .tag.purple { background: #F3E5F5; color: #6A1B9A; }
+    .tag.gray { background: #F5F5F5; color: #424242; }
 
     /* === MOAT GAUGE === */
-    .moat-gauge {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        padding: 6px 0;
-    }
-    .moat-bar {
-        height: 12px;
-        border-radius: 6px;
-        background: #e2e8f0;
-        flex: 1;
-        overflow: hidden;
-    }
-    .moat-fill {
-        height: 100%;
-        border-radius: 6px;
-        transition: width 0.5s ease;
-    }
+    .moat-gauge { display: flex; align-items: center; gap: 10px; padding: 4px 0; }
+    .moat-bar { height: 10px; border-radius: 5px; background: #e0e4ea; flex: 1; overflow: hidden; }
+    .moat-fill { height: 100%; border-radius: 5px; transition: width 0.5s ease; }
 
     /* === DIVIDERS === */
-    hr { margin: 0.75rem 0; border: none; border-top: 1px solid #e2e8f0; }
+    hr { margin: 0.75rem 0; border: none; border-top: 1px solid #e0e4ea; }
 
     /* === DATAFRAMES === */
     .stDataFrame {
         font-size: 12px !important;
-        border: 1px solid #e2e8f0;
-        border-radius: 8px;
+        border: none;
+        border-radius: 10px;
         margin: 8px 0 14px 0;
         overflow: hidden;
+        box-shadow: 0 1px 4px rgba(0,0,0,0.08);
     }
     .stDataFrame th {
-        font-size: 0.68rem !important;
-        padding: 9px 14px !important;
-        background: #f8fafc;
-        color: #64748b;
+        font-size: 0.65rem !important;
+        padding: 10px 14px !important;
+        background: #1F3864 !important;
+        color: #fff !important;
         font-weight: 600;
         text-transform: uppercase;
-        letter-spacing: 0.06em;
-        border-bottom: 1px solid #e2e8f0;
+        letter-spacing: 0.4px;
+        border: none !important;
     }
     .stDataFrame td {
-        font-size: 0.78rem !important;
+        font-size: 0.76rem !important;
         padding: 8px 14px !important;
-        color: #334155;
+        color: #1a1a2e;
+        border-bottom: 1px solid #e0e4ea;
     }
+    .stDataFrame tr:nth-child(even) td { background: #fafbfd; }
 
     /* === LINKS === */
-    a { color: #2563eb; text-decoration: none; font-weight: 500; }
+    a { color: #2E5496; text-decoration: none; font-weight: 500; }
     a:hover { text-decoration: underline; }
 
     /* === INPUTS === */
     input, select, .stTextInput>div>div>input {
-        border-radius: 6px !important;
-        border: 1px solid #e2e8f0 !important;
+        border-radius: 8px !important;
+        border: 1.5px solid #ddd !important;
         font-size: 0.82rem !important;
         padding: 8px 12px !important;
+        background: #fff !important;
     }
     input:focus, select:focus {
-        border-color: #2563eb !important;
-        box-shadow: 0 0 0 3px rgba(37,99,235,0.1) !important;
+        border-color: #2E5496 !important;
+        outline: none !important;
+        box-shadow: none !important;
     }
 
     /* === BUTTONS === */
     button {
-        border-radius: 6px !important;
-        font-weight: 500 !important;
+        border-radius: 8px !important;
+        font-weight: 600 !important;
+        font-size: 13px !important;
     }
+    button[kind="primary"] { background: #1F3864 !important; color: #fff !important; border: none !important; }
+    button[kind="primary"]:hover { background: #2E5496 !important; }
 
-    /* === MOAT DIMENSION CARDS === */
-    .moat-dim-card {
-        background: #ffffff;
-        border-radius: 8px;
-        padding: 16px 18px;
-        box-shadow: 0 1px 2px rgba(0,0,0,0.03);
-        height: 100%;
-    }
+    /* === TABLE STYLING (for our HTML tables) === */
+    table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    th { background: #1F3864; color: #fff; padding: 9px 12px; text-align: left; font-weight: 600; font-size: 11px; text-transform: uppercase; letter-spacing: 0.4px; white-space: nowrap; }
+    td { padding: 7px 12px; border-bottom: 1px solid #e0e4ea; vertical-align: middle; }
+    tr:nth-child(even) td { background: #fafbfd; }
 
     /* === THEME ACCENTS === */
-    .theme-ai { border-left: 3px solid #7c3aed; padding-left: 12px; }
-    .theme-energy { border-left: 3px solid #d97706; padding-left: 12px; }
-    .theme-health { border-left: 3px solid #059669; padding-left: 12px; }
-    .theme-software { border-left: 3px solid #2563eb; padding-left: 12px; }
+    .theme-ai { border-left: 3px solid #6C3483; padding-left: 12px; }
+    .theme-energy { border-left: 3px solid #D68910; padding-left: 12px; }
+    .theme-health { border-left: 3px solid #1E8449; padding-left: 12px; }
+    .theme-software { border-left: 3px solid #2E5496; padding-left: 12px; }
 
     /* === FACTOR ATTRIBUTION ROW === */
     .factor-row {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        padding: 9px 14px;
-        margin: 3px 0;
-        background: #ffffff;
-        border: 1px solid #f1f5f9;
-        border-radius: 6px;
-        transition: background 0.15s;
+        display: flex; align-items: center; gap: 12px;
+        padding: 7px 14px; margin: 2px 0;
+        background: #fff; border: 1px solid #e8edf3; border-radius: 8px;
     }
-    .factor-row:hover { background: #f8fafc; }
+    .factor-row:hover { background: #f5f7fb; }
 
     /* === SCROLLBAR === */
     ::-webkit-scrollbar { width: 6px; }
-    ::-webkit-scrollbar-track { background: #f1f5f9; }
-    ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
+    ::-webkit-scrollbar-track { background: #f0f2f5; }
+    ::-webkit-scrollbar-thumb { background: #c0c7d0; border-radius: 3px; }
 
     /* === NOB BANNER === */
     .nob-banner {
-        padding: 10px 18px;
-        border-radius: 8px;
-        margin: 10px 0;
-        font-size: 0.85rem;
-        display: flex;
-        align-items: center;
-        gap: 12px;
+        padding: 12px 18px; border-radius: 10px; margin: 10px 0;
+        font-size: 0.85rem; display: flex; align-items: center; gap: 12px;
+        box-shadow: 0 1px 4px rgba(0,0,0,0.08);
     }
+
+    /* === KPI GRID (top bar) === */
+    .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 12px; margin-bottom: 14px; }
+    .kpi { background: #fff; border-radius: 10px; padding: 14px 16px; box-shadow: 0 1px 4px rgba(0,0,0,0.08); border-left: 4px solid #2E5496; }
+    .kpi .kpi-label { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; color: #888; margin-bottom: 4px; }
+    .kpi .kpi-value { font-size: 20px; font-weight: 700; color: #1F3864; }
+    .kpi .kpi-sub { font-size: 10px; color: #aaa; margin-top: 2px; }
+    .kpi.green { border-left-color: #1E8449; }
+    .kpi.red { border-left-color: #C0392B; }
+    .kpi.purple { border-left-color: #6C3483; }
+    .kpi.teal { border-left-color: #117A65; }
+    .pos { color: #1E8449; font-weight: 600; font-size: 11px; }
+    .neg { color: #C0392B; font-weight: 600; font-size: 11px; }
+
+    /* === SPACING === */
+    .stMarkdown { margin-bottom: 2px !important; }
+    .stCaption { margin-top: 2px !important; margin-bottom: 4px !important; font-size: 0.75rem !important; color: #888 !important; }
+    p { margin-bottom: 3px !important; }
+    div[data-testid="column"] { padding: 0 3px; }
+    div[data-testid="stTabs"] { margin-top: 6px; }
+    div[data-baseweb="tab-panel"] { padding-top: 6px !important; }
 </style>
 """, unsafe_allow_html=True)
 
@@ -345,17 +285,16 @@ def moat_bar(rating):
 # HEADER
 # ===========================================================================
 # ===========================================================================
-# HEADER — dark bar with logo, inputs
+# HEADER — FinancialPlanner navy gradient style
 # ===========================================================================
 st.markdown("""
-<div style="background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); margin: -2rem -4rem 0 -4rem; padding: 16px 4rem 14px 4rem;">
+<div style="background: linear-gradient(135deg, #1F3864 0%, #2E5496 100%); margin: -2rem -4rem 0 -4rem; padding: 12px 4rem 12px 4rem; box-shadow: 0 2px 12px rgba(0,0,0,0.3);">
     <div style="display: flex; align-items: center; justify-content: space-between;">
-        <div style="display: flex; align-items: center; gap: 10px;">
-            <span style="font-size: 1.5rem;"></span>
-            <span style="font-size: 1.2rem; font-weight: 700; color: #f8fafc; letter-spacing: -0.02em;">Analytical Alpha</span>
-            <span style="font-size: 0.7rem; font-weight: 500; color: #94a3b8; background: #334155; padding: 3px 10px; border-radius: 4px;">2026</span>
+        <div style="display: flex; align-items: center; gap: 8px;">
+            <span style="font-size: 17px; font-weight: 700; color: #fff; letter-spacing: 0.5px;">Analytical Alpha</span>
+            <span style="color: #7EC8E3; font-size: 10px; font-weight: 400; letter-spacing: 0.5px; text-transform: uppercase;">2026 Framework</span>
         </div>
-        <span style="font-size: 0.7rem; color: #64748b;">Strategic Growth Investment Framework</span>
+        <span style="font-size: 11px; color: rgba(255,255,255,0.6);">Strategic Growth Investment Framework</span>
     </div>
 </div>
 """, unsafe_allow_html=True)
@@ -509,36 +448,34 @@ risk_factors = risk_mgmt['risk_factors']
 
 c1, c2, c3, c4, c5, c6, c7, c8 = st.columns(8)
 with c1:
-    st.markdown(metric_card("Price", f"{cs}{price:.2f}"), unsafe_allow_html=True)
+    st.markdown(f'<div class="kpi"><div class="kpi-label">Price</div><div class="kpi-value">{cs}{price:.2f}</div></div>', unsafe_allow_html=True)
 with c2:
-    st.markdown(metric_card("Market Cap", f"{cs}{mcap/1e9:.1f}B" if mcap else "N/A"), unsafe_allow_html=True)
+    st.markdown(f'<div class="kpi"><div class="kpi-label">Market Cap</div><div class="kpi-value">{cs}{mcap/1e9:.1f}B</div></div>' if mcap else '<div class="kpi"><div class="kpi-label">Market Cap</div><div class="kpi-value">N/A</div></div>', unsafe_allow_html=True)
 with c3:
     r40_val = r40.get('rule_40_fcf')
-    r40_color = "#16a34a" if (r40_val and r40_val >= 50) else ("#ea580c" if (r40_val and r40_val >= 40) else ("#dc2626" if (r40_val and r40_val < 30) else "#6b7280"))
-    r40_display = f"{r40_val:.0f}" if r40_val is not None else "N/A"
-    st.markdown(metric_card("Rule of 40", r40_display, sub="FCF basis" if r40_val is not None else None, color=r40_color), unsafe_allow_html=True)
+    c3_class = 'kpi green' if (r40_val and r40_val >= 50) else ('kpi' if (r40_val and r40_val >= 40) else 'kpi red')
+    st.markdown(f'<div class="{c3_class}"><div class="kpi-label">Rule of 40</div><div class="kpi-value">{f"{r40_val:.0f}" if r40_val is not None else "N/A"}</div><div class="kpi-sub">{"FCF basis" if r40_val is not None else ""}</div></div>', unsafe_allow_html=True)
 with c4:
     gm_val = gm_data.get('gross_margin_pct')
-    gm_color = "#16a34a" if (gm_val and gm_val >= 75) else ("#ea580c" if (gm_val and gm_val >= 40) else ("#dc2626" if (gm_val and gm_val is not None and gm_val < 20) else "#6b7280"))
-    st.markdown(metric_card("Gross Margin", f"{gm_val:.0f}%" if gm_val is not None else "N/A", color=gm_color), unsafe_allow_html=True)
+    c4_class = 'kpi green' if (gm_val and gm_val >= 75) else ('kpi' if (gm_val and gm_val >= 40) else 'kpi red')
+    st.markdown(f'<div class="{c4_class}"><div class="kpi-label">Gross Margin</div><div class="kpi-value">{f"{gm_val:.0f}%" if gm_val is not None else "N/A"}</div></div>', unsafe_allow_html=True)
 with c5:
-    nrr = quant['net_revenue_retention']
     nrr_val = nrr.get('estimated_nrr_pct')
-    nrr_color = "#16a34a" if (nrr_val and nrr_val >= 120) else ("#16a34a" if (nrr_val and nrr_val >= 106) else ("#ea580c" if (nrr_val and nrr_val >= 100) else "#dc2626"))
-    nrr_sub = "Installed growth!" if (nrr_val and nrr_val >= 120) else ("≥106% target" if nrr_val is not None else None)
-    st.markdown(metric_card("Est. NRR", f"{nrr_val:.0f}%" if nrr_val is not None else "N/A", sub=nrr_sub, color=nrr_color), unsafe_allow_html=True)
+    c5_class = 'kpi green' if (nrr_val and nrr_val >= 120) else ('kpi teal' if (nrr_val and nrr_val >= 106) else 'kpi')
+    nrr_sub_kpi = "Installed growth" if (nrr_val and nrr_val >= 120) else ("Above benchmark" if (nrr_val and nrr_val >= 106) else "")
+    st.markdown(f'<div class="{c5_class}"><div class="kpi-label">Est. NRR</div><div class="kpi-value">{f"{nrr_val:.0f}%" if nrr_val is not None else "N/A"}</div><div class="kpi-sub">{nrr_sub_kpi}</div></div>', unsafe_allow_html=True)
 with c6:
     moat_val = moat['moat_rating']
-    moat_color = moat['moat_color']
-    st.markdown(metric_card("Moat Rating", f"{moat_val}/10", sub=moat['moat_label'].split('—')[0].strip(), color=moat_color), unsafe_allow_html=True)
+    c6_class = 'kpi green' if moat_val >= 7 else ('kpi purple' if moat_val >= 5 else 'kpi red')
+    st.markdown(f'<div class="{c6_class}"><div class="kpi-label">Moat Rating</div><div class="kpi-value">{moat_val}/10</div><div class="kpi-sub">{moat["moat_label"].split(chr(8212))[0].strip() if chr(8212) in moat["moat_label"] else moat["moat_label"][:20]}</div></div>', unsafe_allow_html=True)
 with c7:
     rank_label = momentum.get('rank_label', 'N/A')
-    rank_color = "#16a34a" if momentum.get('zacks_rank') in [1, 2] else ("#ea580c" if momentum.get('zacks_rank') == 3 else "#dc2626")
-    st.markdown(metric_card("Momentum", rank_label, color=rank_color), unsafe_allow_html=True)
+    c7_class = 'kpi green' if momentum.get('zacks_rank') in [1, 2] else ('kpi purple' if momentum.get('zacks_rank') == 3 else 'kpi red')
+    st.markdown(f'<div class="{c7_class}"><div class="kpi-label">Momentum</div><div class="kpi-value">{rank_label}</div></div>', unsafe_allow_html=True)
 with c8:
     risk_level = risk_factors.get('risk_level', 'N/A')
-    risk_color = "#16a34a" if risk_level == 'Low' else ("#ea580c" if risk_level == 'Medium' else "#dc2626")
-    st.markdown(metric_card("Risk Level", risk_level, color=risk_color), unsafe_allow_html=True)
+    c8_class = 'kpi green' if risk_level == 'Low' else ('kpi' if risk_level == 'Medium' else 'kpi red')
+    st.markdown(f'<div class="{c8_class}"><div class="kpi-label">Risk Level</div><div class="kpi-value">{risk_level}</div></div>', unsafe_allow_html=True)
 
 st.markdown(f'<small><b>{name}</b> | {data["sector"]} | {data["industry"]} | {data.get("country", "")} | Currency: {currency} | Employees: {data.get("employees", "N/A"):,}</small>', unsafe_allow_html=True)
 
@@ -548,13 +485,13 @@ st.markdown(f'<small><b>{name}</b> | {data["sector"]} | {data["industry"]} | {da
 nob_type = result['nob_type']
 nob = result['nob']
 st.markdown(f"""
-<div class="nob-banner" style="background: {nob['color']}08; border: 1px solid {nob['color']}30;">
-    <span style="font-size:1.3rem;">{nob['icon']}</span>
+<div class="nob-banner" style="background: {nob['color']}10; border-left: 4px solid {nob['color']}; background: #fff;">
+    <span style="font-size:1.4rem;">{nob['icon']}</span>
     <div>
-        <div style="font-weight:700; font-size:0.9rem; color:{nob['color']};">{nob['name']}</div>
-        <div style="font-size:0.73rem; color:#64748b;">{nob['description']}</div>
+        <div style="font-weight:700; font-size:0.85rem; color:{nob['color']};">{nob['name']}</div>
+        <div style="font-size:0.7rem; color:#888;">{nob['description']}</div>
     </div>
-    <div style="margin-left:auto; font-size:0.68rem; color:#94a3b8; background:#f8fafc; padding:4px 10px; border-radius:4px;">
+    <div style="margin-left:auto; font-size:0.65rem; color:#888; background:#f7f9fb; padding:4px 10px; border-radius:12px;">
         {nob['metrics_focus']}
     </div>
 </div>
