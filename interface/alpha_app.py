@@ -21,10 +21,10 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
-# FinancialPlanner-style CSS
+# FinancialPlanner-style CSS — high contrast + bold emphasis
 st.markdown("""
 <style>
-    @import url('https://fonts.googleapis.com/css2?family=Segoe+UI:wght@300;400;500;600;700;800&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Segoe+UI:wght@300;400;500;600;700;800;900&display=swap');
 
     /* === ROOT & RESET === */
     * { box-sizing: border-box; }
@@ -32,212 +32,154 @@ st.markdown("""
         font-size: 13px;
         font-family: 'Segoe UI', Arial, sans-serif;
         line-height: 1.5;
-        color: #1a1a2e;
-        background: #f0f2f5;
+        color: #111827;
+        background: #ebeef2;
     }
 
-    /* === HIDE SIDEBAR === */
     section[data-testid="stSidebar"] { display: none; }
-    .stApp { margin-top: -2rem; background: #f0f2f5; }
+    .stApp { margin-top: -2rem; background: #ebeef2; }
     div[data-testid="stVerticalBlock"] { gap: 0.3rem; }
-    div[data-testid="stMetricValue"] { font-size: 1rem !important; }
-    div[data-testid="stMetricLabel"] { font-size: 0.7rem !important; }
 
     /* === TYPOGRAPHY === */
-    h1 { font-size: 1.2rem !important; font-weight: 700 !important; color: #1F3864; margin: 0 !important; }
-    h2 { font-size: 1.05rem !important; font-weight: 700 !important; color: #1F3864; margin: 16px 0 10px 0 !important; }
-    h3 { font-size: 0.9rem !important; font-weight: 600 !important; color: #2E5496; margin: 12px 0 6px 0 !important; }
+    h1 { font-size: 1.3rem !important; font-weight: 800 !important; color: #0d1b3e; margin: 0 !important; letter-spacing: -0.02em; }
+    h2 { font-size: 1.1rem !important; font-weight: 800 !important; color: #0d1b3e; margin: 18px 0 10px 0 !important; }
+    h3 { font-size: 0.95rem !important; font-weight: 700 !important; color: #1e3a6b; margin: 14px 0 8px 0 !important; }
 
     /* === NAVY HEADER === */
-    .stApp > header { background: linear-gradient(135deg, #1F3864, #2E5496) !important; }
+    .stApp > header { background: linear-gradient(135deg, #0d1b3e 0%, #1a3a6b 100%) !important; }
 
     /* === TABS === */
-    .stTabs [data-baseweb="tab-list"] {
-        gap: 2px;
-        border-bottom: 1px solid #e0e4ea;
-        background: transparent;
-        padding: 0 4px;
-    }
+    .stTabs [data-baseweb="tab-list"] { gap: 2px; border-bottom: 2px solid #d0d5dc; background: transparent; padding: 0 4px; }
     .stTabs [data-baseweb="tab"] {
-        font-size: 0.73rem !important;
-        padding: 9px 16px !important;
-        font-weight: 500;
-        color: #777;
-        border-radius: 6px 6px 0 0 !important;
-        margin-right: 1px;
-        border-bottom: 3px solid transparent !important;
+        font-size: 0.73rem !important; padding: 10px 18px !important;
+        font-weight: 600; color: #666; border-radius: 6px 6px 0 0 !important;
+        border-bottom: 3px solid transparent !important; margin-right: 2px;
     }
     .stTabs [data-baseweb="tab"][aria-selected="true"] {
-        color: #1F3864;
-        font-weight: 600;
-        background: #fff;
-        border-bottom: 3px solid #2E5496 !important;
+        color: #0d1b3e; font-weight: 700; background: #fff;
+        border-bottom: 3px solid #1a3a6b !important;
     }
 
-    /* === METRIC CARDS === */
-    .alpha-card {
-        background: #fff;
-        border: none;
-        border-radius: 10px;
-        padding: 16px 14px;
-        box-shadow: 0 1px 4px rgba(0,0,0,0.08);
-        border-left: 4px solid #2E5496;
+    /* === KPI CARDS (top bar) === */
+    .kpi {
+        background: #fff; border-radius: 10px; padding: 14px 16px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.06); border-left: 5px solid #1a3a6b;
         transition: transform 0.15s;
-        height: 100%;
-        margin-bottom: 8px;
     }
-    .alpha-card:hover { transform: translateY(-1px); }
-    .alpha-card .label {
-        font-size: 0.62rem;
-        color: #888;
-        text-transform: uppercase;
-        letter-spacing: 0.7px;
-        font-weight: 600;
-        margin-bottom: 5px;
-    }
-    .alpha-card .value {
-        font-size: 1.3rem;
-        font-weight: 700;
-        color: #1F3864;
-        line-height: 1.2;
-    }
-    .alpha-card .sub {
-        font-size: 0.65rem;
-        color: #aaa;
-        margin-top: 3px;
-    }
+    .kpi:hover { transform: translateY(-2px); box-shadow: 0 4px 16px rgba(0,0,0,0.1); }
+    .kpi .kpi-label { font-size: 0.6rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; color: #777; margin-bottom: 5px; }
+    .kpi .kpi-value { font-size: 1.35rem; font-weight: 800; color: #0d1b3e; line-height: 1.1; }
+    .kpi .kpi-sub { font-size: 0.65rem; font-weight: 600; color: #999; margin-top: 3px; }
+    .kpi.green { border-left-color: #0d8a3e; }
+    .kpi.green .kpi-value { color: #0d8a3e; }
+    .kpi.red { border-left-color: #c62828; }
+    .kpi.red .kpi-value { color: #c62828; }
+    .kpi.purple { border-left-color: #6a1b9a; }
+    .kpi.purple .kpi-value { color: #6a1b9a; }
+    .kpi.teal { border-left-color: #00695c; }
+    .kpi.teal .kpi-value { color: #00695c; }
 
     /* === VERDICT BANNERS === */
-    .verdict { padding: 14px 20px; border-radius: 10px; margin: 12px 0; font-size: 0.85rem; }
-    .verdict.conviction-high { background: #D5F5E3; border-left: 4px solid #1E8449; }
-    .verdict.conviction-moderate { background: #EBF0FA; border-left: 4px solid #2E5496; }
-    .verdict.conviction-selective { background: #FEF9E7; border-left: 4px solid #D68910; }
-    .verdict.conviction-opportunistic { background: #FFF9C4; border-left: 4px solid #B7950B; }
-    .verdict.conviction-pass { background: #FDECEA; border-left: 4px solid #C0392B; }
+    .verdict { padding: 16px 22px; border-radius: 10px; margin: 14px 0; font-size: 0.88rem; font-weight: 600; }
+    .verdict.conviction-high { background: #c8f7d5; border-left: 5px solid #0d8a3e; color: #074a1f; }
+    .verdict.conviction-moderate { background: #d0dff7; border-left: 5px solid #1a3a6b; color: #0d1b3e; }
+    .verdict.conviction-selective { background: #ffe0b2; border-left: 5px solid #e65100; color: #7a2e00; }
+    .verdict.conviction-opportunistic { background: #fff9c4; border-left: 5px solid #f9a825; color: #5d3f00; }
+    .verdict.conviction-pass { background: #ffcdd2; border-left: 5px solid #c62828; color: #5f0000; }
 
     /* === TAGS === */
-    .tag { display: inline-block; padding: 3px 9px; border-radius: 12px; font-size: 0.63rem; font-weight: 600; }
-    .tag.green { background: #D5F5E3; color: #1E8449; }
-    .tag.red { background: #FDECEA; color: #C0392B; }
-    .tag.amber { background: #FEF9E7; color: #D68910; }
-    .tag.blue { background: #EBF0FA; color: #2E5496; }
-    .tag.purple { background: #F3E5F5; color: #6A1B9A; }
-    .tag.gray { background: #F5F5F5; color: #424242; }
-
-    /* === MOAT GAUGE === */
-    .moat-gauge { display: flex; align-items: center; gap: 10px; padding: 4px 0; }
-    .moat-bar { height: 10px; border-radius: 5px; background: #e0e4ea; flex: 1; overflow: hidden; }
-    .moat-fill { height: 100%; border-radius: 5px; transition: width 0.5s ease; }
+    .tag { display: inline-block; padding: 3px 10px; border-radius: 14px; font-size: 0.62rem; font-weight: 700; }
+    .tag.green { background: #c8f7d5; color: #0d8a3e; }
+    .tag.red { background: #ffcdd2; color: #c62828; }
+    .tag.amber { background: #ffe0b2; color: #e65100; }
+    .tag.blue { background: #d0dff7; color: #1a3a6b; }
+    .tag.purple { background: #e1bee7; color: #6a1b9a; }
+    .tag.gray { background: #e0e0e0; color: #444; }
 
     /* === DIVIDERS === */
-    hr { margin: 0.75rem 0; border: none; border-top: 1px solid #e0e4ea; }
+    hr { margin: 0.75rem 0; border: none; border-top: 2px solid #d0d5dc; }
 
-    /* === DATAFRAMES === */
+    /* === DATAFRAMES (Streamlit native) === */
     .stDataFrame {
-        font-size: 12px !important;
-        border: none;
-        border-radius: 10px;
-        margin: 8px 0 14px 0;
-        overflow: hidden;
-        box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+        font-size: 12px !important; border: none; border-radius: 10px;
+        margin: 8px 0 14px 0; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.06);
     }
     .stDataFrame th {
-        font-size: 0.65rem !important;
-        padding: 10px 14px !important;
-        background: #1F3864 !important;
-        color: #fff !important;
-        font-weight: 600;
-        text-transform: uppercase;
-        letter-spacing: 0.4px;
-        border: none !important;
+        font-size: 0.65rem !important; padding: 10px 14px !important;
+        background: #0d1b3e !important; color: #fff !important;
+        font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; border: none !important;
     }
     .stDataFrame td {
-        font-size: 0.76rem !important;
-        padding: 8px 14px !important;
-        color: #1a1a2e;
-        border-bottom: 1px solid #e0e4ea;
+        font-size: 0.78rem !important; padding: 8px 14px !important;
+        color: #111827; border-bottom: 1px solid #e0e4ea;
     }
-    .stDataFrame tr:nth-child(even) td { background: #fafbfd; }
+    .stDataFrame tr:nth-child(even) td { background: #f5f6f9; }
+
+    /* === HTML TABLES (our custom ones) === */
+    table { width: 100%; border-collapse: collapse; font-size: 0.78rem; }
+    th {
+        background: #0d1b3e; color: #fff; padding: 10px 14px;
+        text-align: left; font-weight: 700; font-size: 0.66rem;
+        text-transform: uppercase; letter-spacing: 0.6px; white-space: nowrap;
+    }
+    td { padding: 8px 14px; border-bottom: 1px solid #e0e4ea; vertical-align: middle; font-weight: 500; }
+    tr:nth-child(even) td { background: #f5f6f9; }
+    td b, td strong { font-weight: 800; color: #0d1b3e; }
 
     /* === LINKS === */
-    a { color: #2E5496; text-decoration: none; font-weight: 500; }
+    a { color: #1a3a6b; text-decoration: none; font-weight: 700; }
     a:hover { text-decoration: underline; }
 
     /* === INPUTS === */
     input, select, .stTextInput>div>div>input {
-        border-radius: 8px !important;
-        border: 1.5px solid #ddd !important;
-        font-size: 0.82rem !important;
-        padding: 8px 12px !important;
-        background: #fff !important;
+        border-radius: 8px !important; border: 2px solid #c8ccd4 !important;
+        font-size: 0.82rem !important; padding: 9px 14px !important;
+        background: #fff !important; font-weight: 500 !important;
     }
     input:focus, select:focus {
-        border-color: #2E5496 !important;
-        outline: none !important;
-        box-shadow: none !important;
+        border-color: #1a3a6b !important; outline: none !important;
+        box-shadow: 0 0 0 3px rgba(26,58,107,0.12) !important;
     }
 
     /* === BUTTONS === */
-    button {
-        border-radius: 8px !important;
-        font-weight: 600 !important;
-        font-size: 13px !important;
-    }
-    button[kind="primary"] { background: #1F3864 !important; color: #fff !important; border: none !important; }
-    button[kind="primary"]:hover { background: #2E5496 !important; }
+    button { border-radius: 8px !important; font-weight: 700 !important; font-size: 0.82rem !important; }
+    button[kind="primary"] { background: #0d1b3e !important; color: #fff !important; border: none !important; }
+    button[kind="primary"]:hover { background: #1a3a6b !important; }
 
-    /* === TABLE STYLING (for our HTML tables) === */
-    table { width: 100%; border-collapse: collapse; font-size: 13px; }
-    th { background: #1F3864; color: #fff; padding: 9px 12px; text-align: left; font-weight: 600; font-size: 11px; text-transform: uppercase; letter-spacing: 0.4px; white-space: nowrap; }
-    td { padding: 7px 12px; border-bottom: 1px solid #e0e4ea; vertical-align: middle; }
-    tr:nth-child(even) td { background: #fafbfd; }
-
-    /* === THEME ACCENTS === */
-    .theme-ai { border-left: 3px solid #6C3483; padding-left: 12px; }
-    .theme-energy { border-left: 3px solid #D68910; padding-left: 12px; }
-    .theme-health { border-left: 3px solid #1E8449; padding-left: 12px; }
-    .theme-software { border-left: 3px solid #2E5496; padding-left: 12px; }
-
-    /* === FACTOR ATTRIBUTION ROW === */
+    /* === FACTOR ATTRIBUTION === */
     .factor-row {
-        display: flex; align-items: center; gap: 12px;
-        padding: 7px 14px; margin: 2px 0;
-        background: #fff; border: 1px solid #e8edf3; border-radius: 8px;
+        display: flex; align-items: center; gap: 14px;
+        padding: 8px 16px; margin: 3px 0;
+        background: #fff; border: 2px solid #e8edf3; border-radius: 8px;
+        font-weight: 600;
     }
-    .factor-row:hover { background: #f5f7fb; }
+    .factor-row:hover { background: #f0f3f8; border-color: #c8d0db; }
 
     /* === SCROLLBAR === */
     ::-webkit-scrollbar { width: 6px; }
-    ::-webkit-scrollbar-track { background: #f0f2f5; }
-    ::-webkit-scrollbar-thumb { background: #c0c7d0; border-radius: 3px; }
+    ::-webkit-scrollbar-track { background: #ebeef2; }
+    ::-webkit-scrollbar-thumb { background: #b0b8c4; border-radius: 3px; }
 
     /* === NOB BANNER === */
     .nob-banner {
-        padding: 12px 18px; border-radius: 10px; margin: 10px 0;
-        font-size: 0.85rem; display: flex; align-items: center; gap: 12px;
-        box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+        padding: 14px 20px; border-radius: 10px; margin: 12px 0;
+        font-size: 0.86rem; display: flex; align-items: center; gap: 14px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.06);
     }
 
-    /* === KPI GRID (top bar) === */
-    .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 12px; margin-bottom: 14px; }
-    .kpi { background: #fff; border-radius: 10px; padding: 14px 16px; box-shadow: 0 1px 4px rgba(0,0,0,0.08); border-left: 4px solid #2E5496; }
-    .kpi .kpi-label { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; color: #888; margin-bottom: 4px; }
-    .kpi .kpi-value { font-size: 20px; font-weight: 700; color: #1F3864; }
-    .kpi .kpi-sub { font-size: 10px; color: #aaa; margin-top: 2px; }
-    .kpi.green { border-left-color: #1E8449; }
-    .kpi.red { border-left-color: #C0392B; }
-    .kpi.purple { border-left-color: #6C3483; }
-    .kpi.teal { border-left-color: #117A65; }
-    .pos { color: #1E8449; font-weight: 600; font-size: 11px; }
-    .neg { color: #C0392B; font-weight: 600; font-size: 11px; }
+    /* === THEME ACCENTS === */
+    .theme-ai { border-left: 4px solid #6a1b9a; padding-left: 14px; }
+    .theme-energy { border-left: 4px solid #e65100; padding-left: 14px; }
+    .theme-health { border-left: 4px solid #0d8a3e; padding-left: 14px; }
+    .theme-software { border-left: 4px solid #1a3a6b; padding-left: 14px; }
 
     /* === SPACING === */
     .stMarkdown { margin-bottom: 2px !important; }
-    .stCaption { margin-top: 2px !important; margin-bottom: 4px !important; font-size: 0.75rem !important; color: #888 !important; }
+    .stCaption { margin-top: 2px !important; margin-bottom: 6px !important; font-size: 0.75rem !important; color: #777 !important; font-weight: 500; }
     p { margin-bottom: 3px !important; }
     div[data-testid="column"] { padding: 0 3px; }
     div[data-testid="stTabs"] { margin-top: 6px; }
-    div[data-baseweb="tab-panel"] { padding-top: 6px !important; }
+    div[data-baseweb="tab-panel"] { padding-top: 8px !important; }
 </style>
 """, unsafe_allow_html=True)
 
@@ -288,13 +230,13 @@ def moat_bar(rating):
 # HEADER — FinancialPlanner navy gradient style
 # ===========================================================================
 st.markdown("""
-<div style="background: linear-gradient(135deg, #1F3864 0%, #2E5496 100%); margin: -2rem -4rem 0 -4rem; padding: 12px 4rem 12px 4rem; box-shadow: 0 2px 12px rgba(0,0,0,0.3);">
+<div style="background: linear-gradient(135deg, #0d1b3e 0%, #1a3a6b 100%); margin: -2rem -4rem 0 -4rem; padding: 14px 4rem 14px 4rem; box-shadow: 0 3px 16px rgba(0,0,0,0.35);">
     <div style="display: flex; align-items: center; justify-content: space-between;">
-        <div style="display: flex; align-items: center; gap: 8px;">
-            <span style="font-size: 17px; font-weight: 700; color: #fff; letter-spacing: 0.5px;">Analytical Alpha</span>
-            <span style="color: #7EC8E3; font-size: 10px; font-weight: 400; letter-spacing: 0.5px; text-transform: uppercase;">2026 Framework</span>
+        <div style="display: flex; align-items: center; gap: 10px;">
+            <span style="font-size: 18px; font-weight: 800; color: #fff; letter-spacing: 0.3px;">Analytical Alpha</span>
+            <span style="color: #64b5f6; font-size: 0.65rem; font-weight: 600; letter-spacing: 0.8px; text-transform: uppercase; background: rgba(255,255,255,0.1); padding: 3px 10px; border-radius: 4px;">2026</span>
         </div>
-        <span style="font-size: 11px; color: rgba(255,255,255,0.6);">Strategic Growth Investment Framework</span>
+        <span style="font-size: 0.7rem; color: rgba(255,255,255,0.5); font-weight: 500;">Strategic Growth Investment Framework</span>
     </div>
 </div>
 """, unsafe_allow_html=True)
@@ -537,19 +479,19 @@ with t1:
 
         if is_active:
             rows_html.append(
-                '<tr style="background:' + bg + '; font-weight:700; border-left:3px solid ' + color + ';">'
-                '<td style="padding:4px 10px; font-size:0.72rem; color:' + color + ';">' + level + '</td>'
-                '<td style="padding:4px 10px; font-size:0.72rem; color:#1e293b;">' + detail + '</td>'
-                '<td style="padding:4px 10px; text-align:right;">'
-                '<span style="background:' + color + '; color:#fff; padding:1px 7px; border-radius:3px; font-size:0.6rem; font-weight:700;">ACTIVE</span>'
+                '<tr style="background:' + bg + '; font-weight:800; border-left:4px solid ' + color + ';">'
+                '<td style="padding:5px 12px; font-size:0.78rem; color:' + color + '; font-weight:800;">' + level + '</td>'
+                '<td style="padding:5px 12px; font-size:0.75rem; color:#0d1b3e; font-weight:700;">' + detail + '</td>'
+                '<td style="padding:5px 12px; text-align:right;">'
+                '<span style="background:' + color + '; color:#fff; padding:2px 10px; border-radius:4px; font-size:0.65rem; font-weight:800;">ACTIVE</span>'
                 '</td></tr>'
             )
         else:
             rows_html.append(
-                '<tr style="opacity:0.45; border-left:3px solid transparent;">'
-                '<td style="padding:4px 10px; font-size:0.7rem; color:#94a3b8;">' + level + '</td>'
-                '<td style="padding:4px 10px; font-size:0.7rem; color:#94a3b8;">' + detail + '</td>'
-                '<td style="padding:4px 10px;"></td></tr>'
+                '<tr style="opacity:0.35; border-left:4px solid transparent;">'
+                '<td style="padding:5px 12px; font-size:0.7rem; color:#999;">' + level + '</td>'
+                '<td style="padding:5px 12px; font-size:0.7rem; color:#999;">' + detail + '</td>'
+                '<td style="padding:5px 12px;"></td></tr>'
             )
 
     table_html = (
@@ -1245,19 +1187,19 @@ with t7:
         bg = cl['bg']
         if is_active:
             rows_t7.append(
-                '<tr style="background:' + bg + '; font-weight:700; border-left:3px solid ' + color + ';">'
-                '<td style="padding:3px 8px; font-size:0.7rem; color:' + color + ';">' + cl['level'] + '</td>'
-                '<td style="padding:3px 8px; font-size:0.7rem; color:#1e293b;">' + cl['detail'] + '</td>'
-                '<td style="padding:3px 8px; text-align:right;">'
-                '<span style="background:' + color + '; color:#fff; padding:1px 7px; border-radius:3px; font-size:0.58rem; font-weight:700;">ACTIVE</span>'
+                '<tr style="background:' + bg + '; font-weight:800; border-left:4px solid ' + color + ';">'
+                '<td style="padding:4px 10px; font-size:0.75rem; color:' + color + '; font-weight:800;">' + cl['level'] + '</td>'
+                '<td style="padding:4px 10px; font-size:0.72rem; color:#0d1b3e; font-weight:700;">' + cl['detail'] + '</td>'
+                '<td style="padding:4px 10px; text-align:right;">'
+                '<span style="background:' + color + '; color:#fff; padding:2px 9px; border-radius:4px; font-size:0.62rem; font-weight:800;">ACTIVE</span>'
                 '</td></tr>'
             )
         else:
             rows_t7.append(
-                '<tr style="opacity:0.4;">'
-                '<td style="padding:3px 8px; font-size:0.68rem; color:#94a3b8;">' + cl['level'] + '</td>'
-                '<td style="padding:3px 8px; font-size:0.68rem; color:#94a3b8;">' + cl['detail'] + '</td>'
-                '<td style="padding:3px 8px;"></td></tr>'
+                '<tr style="opacity:0.3;">'
+                '<td style="padding:4px 10px; font-size:0.68rem; color:#999;">' + cl['level'] + '</td>'
+                '<td style="padding:4px 10px; font-size:0.68rem; color:#999;">' + cl['detail'] + '</td>'
+                '<td style="padding:4px 10px;"></td></tr>'
             )
     table_t7 = (
         '<table style="width:100%; border-collapse:collapse; font-family:Inter,sans-serif; margin-bottom:12px;">'
@@ -1373,12 +1315,12 @@ with t7:
 
     if factors:
         for f in factors:
-            dir_color = "#059669" if f['Direction'] == 'Bullish' else ("#64748b" if f['Direction'] == 'Neutral' else "#dc2626")
+            dir_color = "#0d8a3e" if f['Direction'] == 'Bullish' else ("#555" if f['Direction'] == 'Neutral' else "#c62828")
             st.markdown(f"""
             <div class="factor-row">
-                <span style="font-weight:700;color:{dir_color};min-width:55px;font-size:0.85rem;">{f['Impact']}</span>
-                <span style="font-weight:600;font-size:0.8rem;color:#1e293b;min-width:180px;">{f['Factor']}</span>
-                <span style="font-size:0.75rem;color:#64748b;flex:1;">{f['Detail']}</span>
+                <span style="font-weight:800;color:{dir_color};min-width:55px;font-size:0.9rem;">{f['Impact']}</span>
+                <span style="font-weight:700;font-size:0.82rem;color:#0d1b3e;min-width:180px;">{f['Factor']}</span>
+                <span style="font-size:0.76rem;color:#555;flex:1;font-weight:600;">{f['Detail']}</span>
             </div>
             """, unsafe_allow_html=True)
     else:
