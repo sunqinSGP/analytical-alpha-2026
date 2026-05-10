@@ -573,50 +573,58 @@ t1, t2, t3, t4, t5, t6, t7, t8 = st.tabs([
 # ===== TAB 1: OVERVIEW =====
 with t1:
     # =========================================================================
-    # CONVICTION SPECTRUM — full table with highlight
+    # CONVICTION SPECTRUM — compact table
     # =========================================================================
-    st.markdown("### Investment Conviction")
     conv = thesis['conviction']
     conviction_levels = [
-        {'level': 'HIGH CONVICTION', 'icon': '', 'detail': 'Wide moat + installed growth engine + clean risk. Core portfolio position.',
-         'color': '#059669', 'bg': '#ecfdf5', 'border': '#a7f3d0'},
-        {'level': 'MODERATE CONVICTION', 'icon': '', 'detail': 'Solid fundamentals with manageable risks. Consider barbell pairing.',
-         'color': '#2563eb', 'bg': '#eff6ff', 'border': '#bfdbfe'},
-        {'level': 'SELECTIVE', 'icon': '', 'detail': 'Good moat but elevated risk — reduce position size, tighten stop-losses.',
-         'color': '#ea580c', 'bg': '#fff7ed', 'border': '#fed7aa'},
-        {'level': 'OPPORTUNISTIC', 'icon': '', 'detail': 'Limited moat but favorable risk/reward — trade, do not marry.',
-         'color': '#ca8a04', 'bg': '#fefce8', 'border': '#fde68a'},
-        {'level': 'PASS', 'icon': '', 'detail': 'Neither strong moat nor clean risk. Better opportunities elsewhere in 2026.',
-         'color': '#dc2626', 'bg': '#fef2f2', 'border': '#fecaca'},
+        {'level': 'HIGH CONVICTION', 'detail': 'Wide moat + installed growth + clean risk',
+         'color': '#059669', 'bg': '#ecfdf5'},
+        {'level': 'MODERATE CONVICTION', 'detail': 'Solid fundamentals, manageable risk',
+         'color': '#2563eb', 'bg': '#eff6ff'},
+        {'level': 'SELECTIVE', 'detail': 'Good moat but elevated risk — reduce size',
+         'color': '#ea580c', 'bg': '#fff7ed'},
+        {'level': 'OPPORTUNISTIC', 'detail': 'Limited moat, favorable risk/reward — trade',
+         'color': '#ca8a04', 'bg': '#fefce8'},
+        {'level': 'PASS', 'detail': 'Better opportunities elsewhere in 2026',
+         'color': '#dc2626', 'bg': '#fef2f2'},
     ]
 
-    # Build the conviction table as HTML rows
-    conviction_rows = []
+    rows_html = []
     for cl in conviction_levels:
         is_active = cl['level'] == conv
         color = cl['color']
         bg = cl['bg']
-        border = cl['border']
-        icon = cl['icon']
         level = cl['level']
         detail = cl['detail']
 
         if is_active:
-            row_style = 'background:' + bg + '; border:2px solid ' + color + '; border-radius:8px;'
-            check_html = '<span style="color:' + color + '; font-size:1.2rem; font-weight:700;">&#8592; SELECTED</span>'
+            rows_html.append(
+                '<tr style="background:' + bg + '; font-weight:700; border-left:3px solid ' + color + ';">'
+                '<td style="padding:4px 10px; font-size:0.72rem; color:' + color + ';">' + level + '</td>'
+                '<td style="padding:4px 10px; font-size:0.72rem; color:#1e293b;">' + detail + '</td>'
+                '<td style="padding:4px 10px; text-align:right;">'
+                '<span style="background:' + color + '; color:#fff; padding:1px 7px; border-radius:3px; font-size:0.6rem; font-weight:700;">ACTIVE</span>'
+                '</td></tr>'
+            )
         else:
-            row_style = 'opacity:0.55; background:#fafafa; border:1px solid #e5e7eb; border-radius:8px;'
-            check_html = ''
+            rows_html.append(
+                '<tr style="opacity:0.45; border-left:3px solid transparent;">'
+                '<td style="padding:4px 10px; font-size:0.7rem; color:#94a3b8;">' + level + '</td>'
+                '<td style="padding:4px 10px; font-size:0.7rem; color:#94a3b8;">' + detail + '</td>'
+                '<td style="padding:4px 10px;"></td></tr>'
+            )
 
-        row = '<div style="' + row_style + ' padding:10px 16px; margin:6px 0; display:flex; align-items:center; gap:14px; transition:all 0.2s;">'
-        row += '<span style="font-size:1.3rem; min-width:28px;">' + icon + '</span>'
-        row += '<span style="font-weight:700; font-size:0.82rem; color:' + color + '; min-width:150px;">' + level + '</span>'
-        row += '<span style="font-size:0.78rem; color:#475569; flex:1;">' + detail + '</span>'
-        row += check_html
-        row += '</div>'
-        conviction_rows.append(row)
-
-    st.markdown('\n'.join(conviction_rows), unsafe_allow_html=True)
+    table_html = (
+        '<table style="width:100%; border-collapse:collapse; font-family:Inter,sans-serif;">'
+        '<thead><tr style="border-bottom:2px solid #e2e8f0;">'
+        '<th style="padding:4px 10px; font-size:0.62rem; color:#94a3b8; text-transform:uppercase; letter-spacing:0.06em; text-align:left; width:160px;">Conviction Level</th>'
+        '<th style="padding:4px 10px; font-size:0.62rem; color:#94a3b8; text-transform:uppercase; letter-spacing:0.06em; text-align:left;">Criteria</th>'
+        '<th style="padding:4px 10px; text-align:right; width:60px;"></th>'
+        '</tr></thead><tbody>'
+        + '\n'.join(rows_html) +
+        '</tbody></table>'
+    )
+    st.markdown(table_html, unsafe_allow_html=True)
 
     # Thesis paragraph
     st.markdown("### Investment Thesis")
@@ -1499,44 +1507,45 @@ with t6:
 with t7:
     st.markdown("### Investment Conviction & Thesis")
 
-    # Conviction spectrum (same as Overview)
+    # Conviction spectrum — compact table
     conv = thesis['conviction']
     conviction_levels = [
-        {'level': 'HIGH CONVICTION', 'icon': '', 'detail': 'Wide moat + installed growth engine + clean risk. Core portfolio position.',
-         'color': '#059669', 'bg': '#ecfdf5', 'border': '#a7f3d0'},
-        {'level': 'MODERATE CONVICTION', 'icon': '', 'detail': 'Solid fundamentals with manageable risks. Consider barbell pairing.',
-         'color': '#2563eb', 'bg': '#eff6ff', 'border': '#bfdbfe'},
-        {'level': 'SELECTIVE', 'icon': '', 'detail': 'Good moat but elevated risk — reduce position size, tighten stop-losses.',
-         'color': '#ea580c', 'bg': '#fff7ed', 'border': '#fed7aa'},
-        {'level': 'OPPORTUNISTIC', 'icon': '', 'detail': 'Limited moat but favorable risk/reward — trade, do not marry.',
-         'color': '#ca8a04', 'bg': '#fefce8', 'border': '#fde68a'},
-        {'level': 'PASS', 'icon': '', 'detail': 'Neither strong moat nor clean risk. Better opportunities elsewhere in 2026.',
-         'color': '#dc2626', 'bg': '#fef2f2', 'border': '#fecaca'},
+        {'level': 'HIGH CONVICTION', 'detail': 'Wide moat + installed growth + clean risk', 'color': '#059669', 'bg': '#ecfdf5'},
+        {'level': 'MODERATE CONVICTION', 'detail': 'Solid fundamentals, manageable risk', 'color': '#2563eb', 'bg': '#eff6ff'},
+        {'level': 'SELECTIVE', 'detail': 'Good moat but elevated risk', 'color': '#ea580c', 'bg': '#fff7ed'},
+        {'level': 'OPPORTUNISTIC', 'detail': 'Limited moat, favorable risk/reward', 'color': '#ca8a04', 'bg': '#fefce8'},
+        {'level': 'PASS', 'detail': 'Better opportunities elsewhere', 'color': '#dc2626', 'bg': '#fef2f2'},
     ]
-    conv_rows_t7 = []
+    rows_t7 = []
     for cl in conviction_levels:
         is_active = cl['level'] == conv
         color = cl['color']
         bg = cl['bg']
-        icon = cl['icon']
-        level = cl['level']
-        detail = cl['detail']
-
         if is_active:
-            row_style = 'background:' + bg + '; border:2px solid ' + color + '; border-radius:8px;'
-            check_html = '<span style="color:' + color + '; font-size:1.1rem; font-weight:700;">&#8592; SELECTED</span>'
+            rows_t7.append(
+                '<tr style="background:' + bg + '; font-weight:700; border-left:3px solid ' + color + ';">'
+                '<td style="padding:3px 8px; font-size:0.7rem; color:' + color + ';">' + cl['level'] + '</td>'
+                '<td style="padding:3px 8px; font-size:0.7rem; color:#1e293b;">' + cl['detail'] + '</td>'
+                '<td style="padding:3px 8px; text-align:right;">'
+                '<span style="background:' + color + '; color:#fff; padding:1px 7px; border-radius:3px; font-size:0.58rem; font-weight:700;">ACTIVE</span>'
+                '</td></tr>'
+            )
         else:
-            row_style = 'opacity:0.5; background:#fafafa; border:1px solid #e5e7eb; border-radius:8px;'
-            check_html = ''
-
-        row = '<div style="' + row_style + ' padding:9px 16px; margin:5px 0; display:flex; align-items:center; gap:12px;">'
-        row += '<span style="font-size:1.2rem; min-width:24px;">' + icon + '</span>'
-        row += '<span style="font-weight:700; font-size:0.8rem; color:' + color + '; min-width:140px;">' + level + '</span>'
-        row += '<span style="font-size:0.76rem; color:#475569; flex:1;">' + detail + '</span>'
-        row += check_html
-        row += '</div>'
-        conv_rows_t7.append(row)
-    st.markdown('\n'.join(conv_rows_t7), unsafe_allow_html=True)
+            rows_t7.append(
+                '<tr style="opacity:0.4;">'
+                '<td style="padding:3px 8px; font-size:0.68rem; color:#94a3b8;">' + cl['level'] + '</td>'
+                '<td style="padding:3px 8px; font-size:0.68rem; color:#94a3b8;">' + cl['detail'] + '</td>'
+                '<td style="padding:3px 8px;"></td></tr>'
+            )
+    table_t7 = (
+        '<table style="width:100%; border-collapse:collapse; font-family:Inter,sans-serif; margin-bottom:12px;">'
+        '<thead><tr style="border-bottom:2px solid #e2e8f0;">'
+        '<th style="padding:3px 8px; font-size:0.6rem; color:#94a3b8; text-transform:uppercase; letter-spacing:0.06em; text-align:left;">Conviction</th>'
+        '<th style="padding:3px 8px; font-size:0.6rem; color:#94a3b8; text-transform:uppercase; letter-spacing:0.06em; text-align:left;">Criteria</th>'
+        '<th style="padding:3px 8px; text-align:right; width:55px;"></th>'
+        '</tr></thead><tbody>' + '\n'.join(rows_t7) + '</tbody></table>'
+    )
+    st.markdown(table_t7, unsafe_allow_html=True)
 
     # Full thesis
     st.markdown("#### One-Paragraph Thesis")
