@@ -798,90 +798,59 @@ with t2:
         rpo_signal = rpo_data.get('leading_indicator_signal')
         rpo_growth = rpo_data.get('rpo_growth_pct')
         rpo_color = "#16a34a" if rpo_signal == "STRONG LEAD" else ("#ea580c" if rpo_signal == "LAGGING" else "#3b82f6")
-        rpo_icon = "" if rpo_signal == "STRONG LEAD" else ("" if rpo_signal == "LAGGING" else "")
         rev_growth_pct = rpo_data.get('revenue_growth_pct')
-
-        rpo_lines = [
-            f'<div class="alpha-card" style="border-top:3px solid {rpo_color};">',
-            '<div class="label"> Remaining Performance Obligations</div>',
-            '<div style="font-size:0.78rem;color:#64748b;margin:4px 0;">Deferred revenue + contracted backlog</div>',
-            f'<div class="value" style="color:{rpo_color};font-size:1.1rem;">{rpo_icon} {rpo_signal if rpo_signal else "N/A"}</div>',
-            '<div style="font-size:0.75rem;color:#475569;margin-top:2px;">',
-            f'RPO Growth: <b>{fmt_pct(rpo_growth)}</b><br>',
-            f'vs Rev Growth: <b>{fmt_pct(rev_growth_pct)}</b>',
-            '</div>',
-            '<div style="font-size:0.68rem;color:#94a3b8;margin-top:4px;">RPO growth > revenue growth = revenue will accelerate</div>',
-            '</div>',
-        ]
-        st.markdown('\n'.join(rpo_lines), unsafe_allow_html=True)
+        rpo_badge = '<span style="background:' + rpo_color + '; color:#fff; padding:1px 6px; border-radius:3px; font-size:0.6rem; font-weight:700;">' + (rpo_signal if rpo_signal else 'N/A') + '</span>'
+        st.markdown(
+            '<table style="width:100%; border-collapse:collapse; font-family:Inter,sans-serif; font-size:0.7rem;">'
+            '<tr style="border-bottom:1px solid #e2e8f0;"><td style="padding:4px 0; color:#64748b; width:100px;">RPO Growth</td><td style="padding:4px 0; font-weight:600;">' + fmt_pct(rpo_growth) + '</td></tr>'
+            '<tr style="border-bottom:1px solid #e2e8f0;"><td style="padding:4px 0; color:#64748b;">vs Rev Growth</td><td style="padding:4px 0; font-weight:600;">' + fmt_pct(rev_growth_pct) + '</td></tr>'
+            '<tr><td style="padding:4px 0; color:#64748b;">Signal</td><td style="padding:4px 0;">' + rpo_badge + '</td></tr>'
+            '</table>',
+            unsafe_allow_html=True
+        )
         if rpo_data.get('signal_detail'):
             st.caption(rpo_data['signal_detail'])
 
     with fi2:
-        # NRR with Installed Growth
         nrr_growth = nrr.get('estimated_nrr_pct')
-        if nrr_growth is not None and nrr_growth >= 120:
-            nrr_color_fi = "#16a34a"; nrr_icon_fi = ""
-        elif nrr_growth is not None and nrr_growth >= 106:
-            nrr_color_fi = "#16a34a"; nrr_icon_fi = ""
-        elif nrr_growth is not None and nrr_growth >= 100:
-            nrr_color_fi = "#ea580c"; nrr_icon_fi = ""
-        else:
-            nrr_color_fi = "#dc2626"; nrr_icon_fi = ""
-
+        if nrr_growth is not None and nrr_growth >= 120: nrr_color_fi = "#059669"
+        elif nrr_growth is not None and nrr_growth >= 106: nrr_color_fi = "#16a34a"
+        elif nrr_growth is not None and nrr_growth >= 100: nrr_color_fi = "#ea580c"
+        else: nrr_color_fi = "#dc2626"
         nrr_val_str = f'{nrr_growth:.0f}%' if nrr_growth is not None else 'N/A'
         if nrr_growth is not None and nrr_growth >= 100:
-            growth_detail = f"At {nrr_growth:.0f}% NRR, the business grows {nrr_growth - 100:.0f}% even with ZERO new customers"
+            growth_detail = f"At {nrr_growth:.0f}% NRR, grows {nrr_growth - 100:.0f}% even with ZERO new customers"
         else:
-            growth_detail = "NRR below 100% means the existing base is shrinking"
-
-        nrr_lines = [
-            f'<div class="alpha-card" style="border-top:3px solid {nrr_color_fi};">',
-            '<div class="label"> Net Retention Rate</div>',
-            '<div style="font-size:0.78rem;color:#64748b;margin:4px 0;">Existing customer expansion &mdash; installed growth</div>',
-            f'<div class="value" style="color:{nrr_color_fi};font-size:1.1rem;">{nrr_icon_fi} {nrr_val_str}</div>',
-            '<div style="font-size:0.75rem;color:#475569;margin-top:2px;">Benchmark: <b>&ge;106%</b> | Installed Growth: <b>&ge;120%</b></div>',
-            f'<div style="font-size:0.68rem;color:#94a3b8;margin-top:4px;">{growth_detail}</div>',
-            '</div>',
-        ]
-        st.markdown('\n'.join(nrr_lines), unsafe_allow_html=True)
-        if nrr.get('installed_growth_note'):
-            st.caption(nrr['installed_growth_note'])
+            growth_detail = "NRR below 100% means existing base is shrinking"
+        st.markdown(
+            '<div style="font-size:1rem; font-weight:700; color:' + nrr_color_fi + '; margin-bottom:4px;">' + nrr_val_str + '</div>'
+            '<table style="width:100%; border-collapse:collapse; font-family:Inter,sans-serif; font-size:0.7rem;">'
+            '<tr style="border-bottom:1px solid #e2e8f0;"><td style="padding:4px 0; color:#64748b; width:90px;">Benchmark</td><td style="padding:4px 0; font-weight:600;">&ge;106%</td></tr>'
+            '<tr style="border-bottom:1px solid #e2e8f0;"><td style="padding:4px 0; color:#64748b;">Installed Growth</td><td style="padding:4px 0; font-weight:600;">&ge;120%</td></tr>'
+            '<tr><td style="padding:4px 0; color:#64748b;">Impact</td><td style="padding:4px 0; font-size:0.65rem; color:#64748b;">' + growth_detail + '</td></tr>'
+            '</table>',
+            unsafe_allow_html=True
+        )
 
     with fi3:
-        # Forward Rule of 40
         fwd_r40_val = fwd_r40.get('forward_rule_40')
         trail_r40_val = fwd_r40.get('trailing_rule_40')
         inflection = fwd_r40.get('inflection_signal', '')
-
-        if inflection in ('MASSIVE INFLECTION', 'POSITIVE INFLECTION', 'BENCHMARK CROSSOVER'):
-            fwd_color = "#16a34a"; fwd_icon = ""
-        elif inflection in ('NEGATIVE INFLECTION', 'SEVERE DECLINE'):
-            fwd_color = "#dc2626"; fwd_icon = ""
-        else:
-            fwd_color = "#3b82f6"; fwd_icon = ""
-
+        if inflection in ('MASSIVE INFLECTION', 'POSITIVE INFLECTION', 'BENCHMARK CROSSOVER'): fwd_color = "#059669"
+        elif inflection in ('NEGATIVE INFLECTION', 'SEVERE DECLINE'): fwd_color = "#dc2626"
+        else: fwd_color = "#3b82f6"
         fwd_val_str = f'{fwd_r40_val:.0f}' if fwd_r40_val is not None else 'N/A'
         if trail_r40_val is not None:
-            fwd_val_str += f' vs trailing {trail_r40_val:.0f}'
-        fwd_rev_str = fmt_pct(fwd_r40.get('forward_rev_growth_pct'))
-        fwd_fcf_str = fmt_pct(fwd_r40.get('forward_fcf_margin_pct'))
-
-        fwd_lines = [
-            f'<div class="alpha-card" style="border-top:3px solid {fwd_color};">',
-            '<div class="label"> Forward Rule of 40</div>',
-            '<div style="font-size:0.78rem;color:#64748b;margin:4px 0;">Using analyst estimates for next year</div>',
-            f'<div class="value" style="color:{fwd_color};font-size:1.1rem;">{fwd_icon} {fwd_val_str}</div>',
-            '<div style="font-size:0.75rem;color:#475569;margin-top:2px;">',
-            f'Forward Rev Growth: <b>{fwd_rev_str}</b><br>',
-            f'Forward FCF Margin: <b>{fwd_fcf_str}</b>',
-            '</div>',
-            f'<div style="font-size:0.68rem;color:#94a3b8;margin-top:4px;">{inflection if inflection else "Forward estimates unavailable"}</div>',
-            '</div>',
-        ]
-        st.markdown('\n'.join(fwd_lines), unsafe_allow_html=True)
-        if fwd_r40.get('inflection_detail'):
-            st.caption(fwd_r40['inflection_detail'])
+            fwd_val_str += f' vs {trail_r40_val:.0f} trailing'
+        st.markdown(
+            '<div style="font-size:1rem; font-weight:700; color:' + fwd_color + '; margin-bottom:4px;">' + fwd_val_str + '</div>'
+            '<table style="width:100%; border-collapse:collapse; font-family:Inter,sans-serif; font-size:0.7rem;">'
+            '<tr style="border-bottom:1px solid #e2e8f0;"><td style="padding:4px 0; color:#64748b; width:90px;">Fwd Rev</td><td style="padding:4px 0; font-weight:600;">' + fmt_pct(fwd_r40.get('forward_rev_growth_pct')) + '</td></tr>'
+            '<tr style="border-bottom:1px solid #e2e8f0;"><td style="padding:4px 0; color:#64748b;">Fwd FCF Margin</td><td style="padding:4px 0; font-weight:600;">' + fmt_pct(fwd_r40.get('forward_fcf_margin_pct')) + '</td></tr>'
+            '<tr><td style="padding:4px 0; color:#64748b;">Signal</td><td style="padding:4px 0;"><span style="font-size:0.65rem; font-weight:600; color:' + fwd_color + ';">' + (inflection if inflection else 'N/A') + '</span></td></tr>'
+            '</table>',
+            unsafe_allow_html=True
+        )
 
     # Show the "why this matters" logic
     with st.expander("  Why These Matter — The Forward-Looking Logic"):
@@ -901,102 +870,34 @@ with t2:
         """)
 
     st.markdown("---")
-    st.markdown("#### Standard Quantitative Metrics")
+    st.markdown("#### Core Metrics & Momentum")
+    r40_ebitda = r40.get('rule_40_ebitda')
+    r40_fcf = r40.get('rule_40_fcf')
+    r40_assess = r40.get('assessment', 'N/A')
+    arr_growth = arr.get('estimated_arr_growth_pct')
+    nrr_pct = nrr.get('estimated_nrr_pct')
+    gm_pct = gm_data.get('gross_margin_pct')
+    mom_score = momentum.get('momentum_score', 0)
+    mom_rank = momentum.get('rank_label', 'N/A')
+    mom_signals = ', '.join(momentum.get('signals', [])[:3])
 
-    q1, q2 = st.columns([1, 1])
-    with q1:
-        st.markdown("#### Rule of 40 (SaaS Efficiency Standard)")
-        r40_ebitda = r40.get('rule_40_ebitda')
-        r40_fcf = r40.get('rule_40_fcf')
-        r40_assess = r40.get('assessment', 'N/A')
-
-        rc1, rc2 = st.columns(2)
-        with rc1:
-            ebitda_display = f"{r40_ebitda:.0f}" if r40_ebitda is not None else "N/A"
-            st.metric("EBITDA Basis", ebitda_display)
-            st.caption("Revenue Growth % + EBITDA Margin %")
-        with rc2:
-            fcf_display = f"{r40_fcf:.0f}" if r40_fcf is not None else "N/A"
-            st.metric("FCF Basis (2026 Refined)", fcf_display)
-            st.caption("Adds back SBC — often ~16pp higher")
-
-        assess_color = "#16a34a" if "Elite" in str(r40_assess) or "Strong" in str(r40_assess) else ("#ea580c" if "Adequate" in str(r40_assess) else "#dc2626")
-        st.markdown(f'<span style="color:{assess_color};font-weight:600;">{r40_assess}</span>', unsafe_allow_html=True)
-        st.caption(f"Benchmark: {r40.get('benchmark', '')}")
-        if r40_fcf is not None and r40_ebitda is not None:
-            gap = r40_fcf - r40_ebitda
-            st.caption(f"FCF-EBITDA gap: {gap:+.0f}pp — {'typical for companies with significant SBC' if gap > 5 else 'minimal SBC adjustment'}")
-
-        st.markdown("---")
-        st.markdown("#### Gross Margin Efficiency")
-        gm_pct = gm_data.get('gross_margin_pct')
-        gm_assess = gm_data.get('assessment', '')
-        if gm_pct is not None:
-            st.metric("Gross Margin", f"{gm_pct:.1f}%")
-            gm_assess_color = "#16a34a" if "Excellent" in str(gm_assess) or "Good" in str(gm_assess) else ("#ea580c" if "Adequate" in str(gm_assess) else "#dc2626")
-            st.markdown(f'<span style="color:{gm_assess_color};font-weight:600;">{gm_assess}</span>', unsafe_allow_html=True)
-            st.caption(f"Benchmark: {gm_data.get('benchmark', '')}")
-
-    with q2:
-        st.markdown("#### ARR Growth Estimate")
-        arr_growth = arr.get('estimated_arr_growth_pct')
-        is_sub = arr.get('is_subscription_business', False)
-        arr_assess = arr.get('assessment', '')
-
-        if arr_growth is not None:
-            st.metric("Est. ARR Growth (TTM)", f"{arr_growth:.1f}%")
-            arr_color = "#16a34a" if arr_growth >= 25 else ("#ea580c" if arr_growth >= 15 else "#dc2626")
-            st.markdown(f'<span style="color:{arr_color};font-weight:600;">{arr_assess}</span>', unsafe_allow_html=True)
-            st.caption(f"Benchmark: {arr.get('benchmark', '')}")
-            if is_sub:
-                st.caption(" Subscription/Recurring revenue model detected")
-        else:
-            st.info("ARR growth cannot be estimated — insufficient quarterly data")
-            st.caption(f"Benchmark: {arr.get('benchmark', '')}")
-            if is_sub:
-                st.caption(" Subscription/Recurring revenue model detected")
-
-        st.markdown("---")
-        st.markdown("#### Net Revenue Retention (Estimate)")
-        nrr_pct = nrr.get('estimated_nrr_pct')
-        nrr_assess = nrr.get('assessment', '')
-
-        if nrr_pct is not None:
-            st.metric("Est. NRR", f"{nrr_pct:.0f}%")
-            nrr_color = "#16a34a" if nrr_pct >= 106 else ("#ea580c" if nrr_pct >= 100 else "#dc2626")
-            st.markdown(f'<span style="color:{nrr_color};font-weight:600;">{nrr_assess}</span>', unsafe_allow_html=True)
-            st.caption(f"Benchmark: {nrr.get('benchmark', '')}")
-            st.caption("Measured via Revenue Per Share trend (proxy for expansion within existing customers)")
-        else:
-            st.info("NRR cannot be estimated — requires quarterly revenue + share count data")
-            st.caption(f"Benchmark: {nrr.get('benchmark', '')}")
-            st.caption("NRR > 106% indicates expansion within existing customer base")
-
-    st.markdown("---")
-    st.markdown("#### Earnings Momentum (Zacks-Style Rank)")
-    ms1, ms2, ms3 = st.columns([0.3, 0.4, 0.3])
-    with ms1:
-        st.metric("Momentum Score", f"{momentum.get('momentum_score', 0):+.0f}")
-        st.metric("Rank", momentum.get('rank_label', 'N/A'))
-        if momentum.get('is_revision_led'):
-            st.success("Revision-led momentum — price supported by rising EPS estimates")
-    with ms2:
-        st.markdown("**Signals**")
-        for sig in momentum.get('signals', []):
-            st.markdown(f'<small> {sig}</small>', unsafe_allow_html=True)
-    with ms3:
-        st.markdown("**Momentum Interpretation**")
-        rank = momentum.get('zacks_rank', 3)
-        if rank == 1:
-            st.success("Strong Buy — favorable estimate revisions + price momentum")
-        elif rank == 2:
-            st.info("Buy — positive momentum signals")
-        elif rank == 3:
-            st.warning("Hold — mixed or neutral momentum")
-        elif rank == 4:
-            st.error("Underperform — negative revision trend")
-        else:
-            st.error("Strong Sell — deteriorating fundamentals")
+    core_rows = [
+        '<tr><td>Rule of 40 (EBITDA)</td><td>' + (f'{r40_ebitda:.0f}' if r40_ebitda is not None else 'N/A') + '</td><td>Rule of 40 (FCF)</td><td>' + (f'{r40_fcf:.0f}' if r40_fcf is not None else 'N/A') + '</td></tr>',
+        '<tr><td>Gross Margin</td><td>' + fmt_pct(gm_pct) + '</td><td>ARR Growth</td><td>' + fmt_pct(arr_growth) + '</td></tr>',
+        '<tr><td>Est. NRR</td><td>' + fmt_pct(nrr_pct) + '</td><td>Momentum</td><td>' + mom_rank + ' (' + f'{mom_score:+.0f}' + ')</td></tr>',
+        '<tr><td colspan="4" style="font-size:0.65rem; color:#64748b;">' + r40_assess + ' | ' + mom_signals + '</td></tr>',
+    ]
+    core_table = (
+        '<table style="width:100%; border-collapse:collapse; font-family:Inter,sans-serif; font-size:0.72rem; margin:8px 0;">'
+        '<colgroup><col style="width:22%"><col style="width:28%"><col style="width:22%"><col style="width:28%"></colgroup>'
+        '<thead><tr style="border-bottom:2px solid #e2e8f0;">'
+        '<th style="padding:4px 10px; font-size:0.62rem; color:#94a3b8; text-transform:uppercase; letter-spacing:0.06em; text-align:left;">Metric</th>'
+        '<th style="padding:4px 10px; font-size:0.62rem; color:#94a3b8; text-transform:uppercase; letter-spacing:0.06em; text-align:left;">Value</th>'
+        '<th style="padding:4px 10px; font-size:0.62rem; color:#94a3b8; text-transform:uppercase; letter-spacing:0.06em; text-align:left;">Metric</th>'
+        '<th style="padding:4px 10px; font-size:0.62rem; color:#94a3b8; text-transform:uppercase; letter-spacing:0.06em; text-align:left;">Value</th>'
+        '</tr></thead><tbody>' + '\n'.join(core_rows) + '</tbody></table>'
+    )
+    st.markdown(core_table, unsafe_allow_html=True)
 
     # ---- NoB-Specific Filter ----
     st.markdown("---")
@@ -1119,128 +1020,75 @@ with t2:
 # ===== TAB 3: QUALITATIVE MOAT =====
 with t3:
     st.markdown("### Technical Moat Architecture")
-    st.caption("Evaluating the 'Circumvention Delta' — what a competitor must spend to replicate the value proposition.")
-
-    # Main moat rating
-    m1, m2 = st.columns([0.6, 0.4])
-    with m1:
-        st.markdown(f"#### Composite Moat Rating")
-        st.markdown(moat_bar(moat_val), unsafe_allow_html=True)
-        st.markdown(f"<b>{moat['moat_label']}</b> — {moat.get('benchmark', '')}", unsafe_allow_html=True)
-        st.caption("Wide-moat stocks have delivered 11.5% annualized returns since 2007 vs. 8.99% for the broad market.")
-    with m2:
-        st.markdown("#### AI Integration Depth")
-        ai_depth = qual.get('ai_integration_depth', 0)
-        ai_depth_labels = {3: 'Deep — Core AI Infrastructure', 2: 'Significant — AI Platform/Models', 1: 'Moderate — AI Applications', 0: 'Limited — Not directly AI-exposed'}
-        ai_color = "#8b5cf6" if ai_depth >= 3 else ("#3b82f6" if ai_depth >= 2 else ("#10b981" if ai_depth >= 1 else "#94a3b8"))
-        st.markdown(f'<span style="font-size:1.4rem;font-weight:700;color:{ai_color};">{ai_depth_labels.get(ai_depth, "None")}</span>', unsafe_allow_html=True)
-        st.caption("Based on business description and industry classification")
-        for sig in qual.get('ai_signals', []):
-            st.markdown(f'<small> {sig}</small>', unsafe_allow_html=True)
-
-    # ---- Circumvention Delta (formula display) ----
-    st.markdown("---")
-    st.markdown("#### Circumvention Delta (Moat Architecture)")
-    st.caption("The total burden a competitor must take on to match a value proposition: **Time + Capital + Performance Loss**")
 
     circumvention = moat.get('circumvention_delta', 0)
     circumvention_pct = moat.get('circumvention_delta_pct', 0)
     cd_formula = moat.get('circumvention_delta_formula', '')
-    cd_color = "#16a34a" if circumvention >= 9 else ("#ea580c" if circumvention >= 6 else "#dc2626")
+    cd_color = "#059669" if circumvention >= 9 else ("#ea580c" if circumvention >= 6 else "#dc2626")
+    perf = qual.get('moat_performance', {})
+    perf_signal = perf.get('performance', 'N/A')
+    perf_color = perf.get('performance_color', '#6b7280')
+    temporal = moat['temporal_width']
+    efficiency = moat['efficiency_width']
+    trust = moat['trust_width']
+    ai_depth = qual.get('ai_integration_depth', 0)
+    ai_depth_labels = {3: 'Deep — AI Infra', 2: 'Significant — AI Models', 1: 'Moderate — AI Apps', 0: 'Limited'}
+    ai_color = "#8b5cf6" if ai_depth >= 3 else ("#3b82f6" if ai_depth >= 2 else ("#10b981" if ai_depth >= 1 else "#94a3b8"))
 
-    cdx1, cdx2 = st.columns([0.6, 0.4])
-    with cdx1:
-        st.markdown(f"""
-        <div class="alpha-card" style="border-top:3px solid {cd_color};">
-            <div class="label">Circumvention Delta Formula</div>
-            <div style="font-size:1.1rem;font-weight:700;color:{cd_color};margin-top:6px;">{cd_formula}</div>
-            <div class="moat-gauge" style="margin-top:8px;">
-                <div class="moat-bar" style="height:12px;">
-                    <div class="moat-fill" style="width:{circumvention_pct}%;background:{cd_color};"></div>
-                </div>
-                <b style="font-size:1.1rem;color:{cd_color};">{circumvention}/{circumvention + (13 - circumvention) if circumvention < 13 else 13}</b>
-            </div>
-            <div style="font-size:0.72rem;color:#64748b;margin-top:4px;">Maximum defensibility at 13 — measures Time(R&D lag) + Capital(efficiency) + Performance Loss(trust barrier)</div>
-        </div>
-        """, unsafe_allow_html=True)
-    with cdx2:
-        # Moat Performance Signal
-        perf = qual.get('moat_performance', {})
-        perf_signal = perf.get('performance', 'INSUFFICIENT DATA')
-        perf_color = perf.get('performance_color', '#6b7280')
-        perf_label = perf.get('performance_label', '')
+    # Moat summary row
+    moat_summary = (
+        '<div style="display:flex; gap:16px; align-items:center; margin:8px 0;">'
+        '<span style="font-weight:700; font-size:1rem; color:' + moat['moat_color'] + ';">Moat ' + str(moat_val) + '/10</span>'
+        '<span style="font-size:0.72rem; color:#64748b;">' + moat['moat_label'] + '</span>'
+        '<span style="font-size:0.68rem; color:#94a3b8;">|</span>'
+        '<span style="font-weight:600; font-size:0.72rem; color:' + cd_color + ';">Circ.Delta ' + str(circumvention) + '/13</span>'
+        '<span style="font-size:0.68rem; color:#94a3b8;">|</span>'
+        '<span style="font-weight:600; font-size:0.72rem; color:' + perf_color + ';">' + perf_signal + '</span>'
+        '<span style="font-size:0.68rem; color:#94a3b8;">|</span>'
+        '<span style="font-weight:600; font-size:0.72rem; color:' + ai_color + ';">AI: ' + ai_depth_labels.get(ai_depth, 'None') + '</span>'
+        '</div>'
+    )
+    st.markdown(moat_summary, unsafe_allow_html=True)
 
-        st.markdown(f"""
-        <div class="alpha-card" style="border-top:3px solid {perf_color};">
-            <div class="label">Moat Trajectory</div>
-            <div style="font-size:1.3rem;font-weight:800;color:{perf_color};margin-top:4px;">{perf_signal}</div>
-            <div style="font-size:0.78rem;color:#475569;margin-top:4px;">{perf_label}</div>
-        </div>
-        """, unsafe_allow_html=True)
+    # Compact moat dimensions table
+    t_c = "#059669" if temporal['score'] >= 4 else ("#ea580c" if temporal['score'] >= 3 else "#dc2626")
+    e_c = "#059669" if efficiency['score'] >= 5 else ("#ea580c" if efficiency['score'] >= 3 else "#dc2626")
+    tr_c = "#059669" if trust['score'] >= 4 else ("#ea580c" if trust['score'] >= 3 else "#dc2626")
+    moat_table = (
+        '<table style="width:100%; border-collapse:collapse; font-family:Inter,sans-serif; font-size:0.7rem; margin:6px 0;">'
+        '<colgroup><col style="width:20%"><col style="width:8%"><col style="width:39%"><col style="width:33%"></colgroup>'
+        '<thead><tr style="border-bottom:2px solid #e2e8f0;">'
+        '<th style="padding:3px 8px; font-size:0.6rem; color:#94a3b8; text-transform:uppercase; letter-spacing:0.05em; text-align:left;">Dimension</th>'
+        '<th style="padding:3px 8px; font-size:0.6rem; color:#94a3b8; text-transform:uppercase; letter-spacing:0.05em; text-align:center;">Score</th>'
+        '<th style="padding:3px 8px; font-size:0.6rem; color:#94a3b8; text-transform:uppercase; letter-spacing:0.05em; text-align:left;">Assessment</th>'
+        '<th style="padding:3px 8px; font-size:0.6rem; color:#94a3b8; text-transform:uppercase; letter-spacing:0.05em; text-align:left;">Signals</th>'
+        '</tr></thead><tbody>'
+        '<tr style="border-bottom:1px solid #f1f5f9;"><td style="padding:3px 8px; font-weight:600;">Temporal Width</td>'
+        '<td style="padding:3px 8px; text-align:center; font-weight:700; color:' + t_c + ';">' + str(temporal['score']) + '/5</td>'
+        '<td style="padding:3px 8px; font-size:0.65rem;">' + temporal['rating'] + '</td>'
+        '<td style="padding:3px 8px; font-size:0.63rem; color:#64748b;">' + ', '.join(temporal.get('signals', [])[:2]) + '</td></tr>'
+        '<tr style="border-bottom:1px solid #f1f5f9;"><td style="padding:3px 8px; font-weight:600;">Efficiency Width</td>'
+        '<td style="padding:3px 8px; text-align:center; font-weight:700; color:' + e_c + ';">' + str(efficiency['score']) + '/5</td>'
+        '<td style="padding:3px 8px; font-size:0.65rem;">' + efficiency['rating'] + '</td>'
+        '<td style="padding:3px 8px; font-size:0.63rem; color:#64748b;">' + ', '.join(efficiency.get('signals', [])[:2]) + '</td></tr>'
+        '<tr><td style="padding:3px 8px; font-weight:600;">Trust Width</td>'
+        '<td style="padding:3px 8px; text-align:center; font-weight:700; color:' + tr_c + ';">' + str(trust['score']) + '/5</td>'
+        '<td style="padding:3px 8px; font-size:0.65rem;">' + trust['rating'] + '</td>'
+        '<td style="padding:3px 8px; font-size:0.63rem; color:#64748b;">' + ', '.join(trust.get('signals', [])[:2]) + '</td></tr>'
+        '</tbody></table>'
+    )
+    st.markdown(moat_table, unsafe_allow_html=True)
+    st.caption('Circumvention Delta = ' + cd_formula + ' | ' + moat.get('benchmark', '') + ' | ' + moat.get('wide_moat_annual_return', ''))
 
-        # Moat signal details
-        if perf.get('compound_signals'):
-            with st.expander(" Compounding Signals"):
+    # Moat signals expander
+    if perf.get('compound_signals') or perf.get('decay_signals'):
+        with st.expander("Moat Signal Details"):
+            if perf.get('compound_signals'):
                 for s in perf['compound_signals']:
-                    st.markdown(f"<small>+ {s}</small>", unsafe_allow_html=True)
-        if perf.get('decay_signals'):
-            with st.expander(" Decaying Signals"):
+                    st.markdown('<small style="color:#059669;">+ ' + s + '</small>', unsafe_allow_html=True)
+            if perf.get('decay_signals'):
                 for s in perf['decay_signals']:
-                    st.markdown(f"<small>- {s}</small>", unsafe_allow_html=True)
-
-    # Three dimensions
-    st.markdown("---")
-    st.markdown("#### Three Dimensions of Technical Defense")
-
-    d1, d2, d3 = st.columns(3)
-
-    with d1:
-        temporal = moat['temporal_width']
-        t_color = "#16a34a" if temporal['score'] >= 4 else ("#ea580c" if temporal['score'] >= 3 else ("#ca8a04" if temporal['score'] >= 2 else "#dc2626"))
-        st.markdown(f"""
-        <div class="alpha-card" style="border-top:3px solid {t_color};">
-            <div class="label">Temporal Width</div>
-            <div class="value" style="color:{t_color};">{temporal['score']}/5</div>
-            <div style="font-size:0.8rem;color:#475569;margin-top:4px;">{temporal['rating']}</div>
-            <div style="margin-top:6px;font-size:0.75rem;color:#64748b;">
-        """, unsafe_allow_html=True)
-        for sig in temporal.get('signals', []):
-            st.markdown(f'<small style="display:block;"> {sig}</small>', unsafe_allow_html=True)
-        st.markdown('<small style="color:#94a3b8;">R&D time-lag a competitor cannot bridge with capital alone</small></div>', unsafe_allow_html=True)
-
-    with d2:
-        efficiency = moat['efficiency_width']
-        e_color = "#16a34a" if efficiency['score'] >= 5 else ("#ea580c" if efficiency['score'] >= 3 else ("#ca8a04" if efficiency['score'] >= 1 else "#dc2626"))
-        st.markdown(f"""
-        <div class="alpha-card" style="border-top:3px solid {e_color};">
-            <div class="label">Efficiency Width</div>
-            <div class="value" style="color:{e_color};">{efficiency['score']}/5</div>
-            <div style="font-size:0.8rem;color:#475569;margin-top:4px;">{efficiency['rating']}</div>
-            <div style="margin-top:6px;font-size:0.75rem;color:#64748b;">
-        """, unsafe_allow_html=True)
-        for sig in efficiency.get('signals', []):
-            st.markdown(f'<small style="display:block;"> {sig}</small>', unsafe_allow_html=True)
-        st.markdown('<small style="color:#94a3b8;">Performance penalty for competitors using alternative architectures</small></div>', unsafe_allow_html=True)
-
-    with d3:
-        trust = moat['trust_width']
-        tr_color = "#16a34a" if trust['score'] >= 4 else ("#ea580c" if trust['score'] >= 3 else ("#ca8a04" if trust['score'] >= 2 else "#dc2626"))
-        st.markdown(f"""
-        <div class="alpha-card" style="border-top:3px solid {tr_color};">
-            <div class="label">Trust Width</div>
-            <div class="value" style="color:{tr_color};">{trust['score']}/5</div>
-            <div style="font-size:0.8rem;color:#475569;margin-top:4px;">{trust['rating']}</div>
-            <div style="margin-top:6px;font-size:0.75rem;color:#64748b;">
-        """, unsafe_allow_html=True)
-        for sig in trust.get('signals', []):
-            st.markdown(f'<small style="display:block;"> {sig}</small>', unsafe_allow_html=True)
-        st.markdown('<small style="color:#94a3b8;">B2B validation barrier — switching costs + proven standard</small></div>', unsafe_allow_html=True)
-
-    # Technology sovereignty
-    st.markdown("---")
-    st.markdown("#### Technology Sovereignty")
-    for s in qual.get('technology_sovereignty', []):
-        st.markdown(f'<small> {s}</small>', unsafe_allow_html=True)
+                    st.markdown('<small style="color:#dc2626;">- ' + s + '</small>', unsafe_allow_html=True)
 
 # ===== TAB 4: 2026 THEMES =====
 with t4:
@@ -1334,156 +1182,110 @@ with t4:
 
 # ===== TAB 5: RISK MANAGEMENT =====
 with t5:
-    st.markdown("### 2026 Risk Management Playbook")
-    st.caption("'Risk management is the differentiator between terminal success and catastrophic drawdown.' — Chief Strategist 2026")
+    st.markdown("### 2026 Risk Management")
 
-    r1, r2 = st.columns([1, 1])
+    position = risk_mgmt['position_sizing']
+    ms = risk_mgmt['mental_stop_loss']
+    max_pos = risk_factors.get('max_suggested_position', 10)
+    rs = risk_factors.get('risk_score', 0)
+    urgency = position['urgency']
+    u_color = "#dc2626" if urgency == 'High' else ("#ea580c" if urgency == 'Medium' else "#059669")
 
-    with r1:
-        st.markdown("#### Position Sizing — 10% NAV Rule")
-        position = risk_mgmt['position_sizing']
-        action = position['action']
-        urgency = position['urgency']
+    # Compact risk summary table
+    risk_rows = [
+        '<tr><td style="font-weight:600;">Risk Level</td><td style="font-weight:700; color:' + ('#059669' if risk_level == 'Low' else ('#ea580c' if risk_level == 'Medium' else '#dc2626')) + ';">' + risk_level + '</td><td style="font-weight:600;">Risk Score</td><td>' + str(rs) + '/10</td></tr>',
+        '<tr><td style="font-weight:600;">Max Position</td><td style="font-weight:700;">' + str(max_pos) + '% NAV</td><td style="font-weight:600;">Current</td><td>' + str(position['current_weight_pct']) + '%</td></tr>',
+        '<tr><td style="font-weight:600;">Position Status</td><td style="font-weight:600; color:' + u_color + ';">' + position['action'] + '</td><td style="font-weight:600;">Stop-Loss</td><td style="font-size:0.65rem;">' + ms['thesis_break_threshold'][:80] + '</td></tr>',
+    ]
+    risk_table = (
+        '<table style="width:100%; border-collapse:collapse; font-family:Inter,sans-serif; font-size:0.7rem; margin:6px 0;">'
+        '<colgroup><col style="width:16%"><col style="width:34%"><col style="width:16%"><col style="width:34%"></colgroup>'
+        '<thead><tr style="border-bottom:2px solid #e2e8f0;">'
+        '<th style="padding:3px 8px; font-size:0.6rem; color:#94a3b8; text-transform:uppercase; letter-spacing:0.05em; text-align:left;">Parameter</th>'
+        '<th style="padding:3px 8px; font-size:0.6rem; color:#94a3b8; text-transform:uppercase; letter-spacing:0.05em; text-align:left;">Value</th>'
+        '<th style="padding:3px 8px; font-size:0.6rem; color:#94a3b8; text-transform:uppercase; letter-spacing:0.05em; text-align:left;">Parameter</th>'
+        '<th style="padding:3px 8px; font-size:0.6rem; color:#94a3b8; text-transform:uppercase; letter-spacing:0.05em; text-align:left;">Value</th>'
+        '</tr></thead><tbody>' + '\n'.join(risk_rows) + '</tbody></table>'
+    )
+    st.markdown(risk_table, unsafe_allow_html=True)
 
-        urgency_color = "#dc2626" if urgency == 'High' else ("#ea580c" if urgency == 'Medium' else "#16a34a")
-        st.markdown(f"""
-        <div class="alpha-card">
-            <div class="label">Current Position Status</div>
-            <div style="margin-top:6px;font-size:0.85rem;font-weight:600;color:{urgency_color};">{action}</div>
-            <div style="margin-top:4px;font-size:0.75rem;color:#64748b;">Max: {position['max_weight_pct']}% NAV | Current: {position['current_weight_pct']}%</div>
-        </div>
-        """, unsafe_allow_html=True)
+    # Risk factors as compact table
+    risk_factor_rows = []
+    for rf in risk_factors.get('risks', []):
+        sev = rf.get('severity', 'Low')
+        sev_c = {'High': '#dc2626', 'Medium': '#ea580c', 'Low': '#059669'}.get(sev, '#6b7280')
+        risk_factor_rows.append(
+            '<tr><td style="font-weight:600;">' + rf['factor'] + '</td>'
+            '<td><span style="font-size:0.6rem; font-weight:600; color:' + sev_c + ';">' + sev + '</span></td>'
+            '<td style="font-size:0.65rem;">' + rf['detail'] + '</td>'
+            '<td style="font-size:0.63rem; color:#64748b;">' + rf['mitigation'] + '</td></tr>'
+        )
+    risk_factors_table = (
+        '<table style="width:100%; border-collapse:collapse; font-family:Inter,sans-serif; font-size:0.7rem; margin:6px 0;">'
+        '<colgroup><col style="width:18%"><col style="width:8%"><col style="width:38%"><col style="width:36%"></colgroup>'
+        '<thead><tr style="border-bottom:2px solid #e2e8f0;">'
+        '<th style="padding:3px 8px; font-size:0.6rem; color:#94a3b8; text-transform:uppercase; letter-spacing:0.05em; text-align:left;">Risk Factor</th>'
+        '<th style="padding:3px 8px; font-size:0.6rem; color:#94a3b8; text-transform:uppercase; letter-spacing:0.05em; text-align:left;">Sev</th>'
+        '<th style="padding:3px 8px; font-size:0.6rem; color:#94a3b8; text-transform:uppercase; letter-spacing:0.05em; text-align:left;">Detail</th>'
+        '<th style="padding:3px 8px; font-size:0.6rem; color:#94a3b8; text-transform:uppercase; letter-spacing:0.05em; text-align:left;">Mitigation</th>'
+        '</tr></thead><tbody>' + '\n'.join(risk_factor_rows) + '</tbody></table>'
+    )
+    st.markdown(risk_factors_table, unsafe_allow_html=True)
 
-        if position.get('note'):
-            st.warning(position['note'])
+    # Framework thresholds expander
+    with st.expander("Framework Stop-Loss Thresholds"):
+        for t, th in {'AAPL': 'Exit if iPhone unit growth turns negative 2 quarters', 'AMZN': 'Exit if AWS growth <14%', 'MSFT': 'Exit if Azure growth <28%', 'NVDA': 'Exit if data center growth <50%'}.items():
+            st.markdown('<small><b>' + t + ':</b> ' + th + '</small>', unsafe_allow_html=True)
 
-        st.markdown("#### Mental Stop-Loss")
-        ms = risk_mgmt['mental_stop_loss']
-        st.markdown(f"""
-        <div class="alpha-card">
-            <div class="label">Thesis-Break Threshold</div>
-            <div style="margin-top:6px;font-size:0.85rem;color:#334155;">{ms['thesis_break_threshold']}</div>
-            <div style="margin-top:6px;font-size:0.72rem;color:#94a3b8;">{'Generated from sector rules' if ms.get('is_custom_generated') else 'Framework-specified threshold'}</div>
-        </div>
-        """, unsafe_allow_html=True)
-        st.caption(ms.get('rule', ''))
-
-        # Well-known thresholds for context
-        with st.expander("Framework Thresholds for Reference"):
-            for t, threshold in {
-                'AAPL': 'Exit if iPhone unit growth turns negative for two consecutive quarters',
-                'AMZN': 'Exit if AWS growth drops below 14%',
-                'MSFT': 'Exit if Azure growth falls below 28%',
-                'NVDA': 'Exit if data center growth drops below 50%',
-            }.items():
-                st.markdown(f"<small><b>{t}:</b> {threshold}</small>", unsafe_allow_html=True)
-
-    with r2:
-        st.markdown("#### Risk Factor Assessment")
-        for rf in risk_factors.get('risks', []):
-            sev_color = {
-                'High': '#dc2626', 'Medium': '#ea580c', 'Low': '#16a34a'
-            }.get(rf.get('severity', ''), '#6b7280')
-            st.markdown(f"""
-            <div class="alpha-card" style="margin-bottom:8px;">
-                <div style="display:flex;justify-content:space-between;align-items:center;">
-                    <b style="font-size:0.82rem;">{rf['factor']}</b>
-                    <span class="tag" style="background:{sev_color}20;color:{sev_color};">{rf['severity']}</span>
-                </div>
-                <div style="font-size:0.78rem;color:#475569;margin-top:4px;">{rf['detail']}</div>
-                <div style="font-size:0.72rem;color:#64748b;margin-top:3px;">Mitigation: {rf['mitigation']}</div>
-            </div>
-            """, unsafe_allow_html=True)
-
-        st.markdown("#### Risk-Adjusted Position Guidance")
-        max_pos = risk_factors.get('max_suggested_position', 10)
-        rs = risk_factors.get('risk_score', 0)
-        st.markdown(f"""
-        <div class="alpha-card">
-            <div class="label">Maximum Suggested Position</div>
-            <div style="font-size:1.3rem;font-weight:700;color:{'#dc2626' if max_pos <= 3 else ('#ea580c' if max_pos <= 7 else '#16a34a')};">{max_pos}% of NAV</div>
-            <div style="font-size:0.75rem;color:#64748b;">Based on risk score: {rs} | Level: {risk_level}</div>
-        </div>
-        """, unsafe_allow_html=True)
-
-    # Barbell check
-    st.markdown("---")
-    st.markdown("#### Barbell Portfolio Structure")
+    # Barbell + Portfolio compact
     barbell = risk_mgmt['barbell_check']
-    bc1, bc2 = st.columns([0.7, 0.3])
-    with bc1:
-        valid = barbell.get('valid', True)
-        bc_color = "#16a34a" if valid else "#ea580c"
-        st.markdown(f'<b style="color:{bc_color};">{"✓" if valid else "⚠"} {barbell.get("message", "")}</b>', unsafe_allow_html=True)
-        st.caption(barbell.get('target', ''))
-    with bc2:
-        segments = barbell.get('segments', {})
-        if segments:
-            st.markdown(f"""
-            <small>
-            High-Growth: {segments.get('high_growth_pct', 0)}%<br>
-            Quality Value: {segments.get('quality_value_pct', 0)}%<br>
-            Other: {segments.get('other_pct', 0)}%
-            </small>
-            """, unsafe_allow_html=True)
+    segments = barbell.get('segments', {})
+    info = data['info']
+    fwd_pe = info.get('forwardPE'); tpe = info.get('trailingPE')
+    ps = info.get('priceToSales'); ev_ebitda = info.get('enterpriseToEbitda')
+    fcf_val = info.get('freeCashflow'); mcap_val = info.get('marketCap')
+    fcf_yield_val = (fcf_val / mcap_val * 100) if (fcf_val and mcap_val and mcap_val > 0) else None
+
+    barbell_portfolio_table = (
+        '<table style="width:100%; border-collapse:collapse; font-family:Inter,sans-serif; font-size:0.7rem; margin:6px 0;">'
+        '<colgroup><col style="width:18%"><col style="width:32%"><col style="width:18%"><col style="width:32%"></colgroup>'
+        '<thead><tr style="border-bottom:2px solid #e2e8f0;">'
+        '<th style="padding:3px 8px; font-size:0.6rem; color:#94a3b8; text-transform:uppercase; letter-spacing:0.05em; text-align:left;">Barbell</th>'
+        '<th style="padding:3px 8px; font-size:0.6rem; color:#94a3b8; text-transform:uppercase; letter-spacing:0.05em; text-align:left;">Allocation</th>'
+        '<th style="padding:3px 8px; font-size:0.6rem; color:#94a3b8; text-transform:uppercase; letter-spacing:0.05em; text-align:left;">Valuation</th>'
+        '<th style="padding:3px 8px; font-size:0.6rem; color:#94a3b8; text-transform:uppercase; letter-spacing:0.05em; text-align:left;">Value</th>'
+        '</tr></thead><tbody>'
+        '<tr><td>High-Growth</td><td>' + str(segments.get('high_growth_pct', 0)) + '%</td>'
+        '<td>Forward P/E</td><td style="font-weight:600;">' + (f'{fwd_pe:.1f}x' if fwd_pe and fwd_pe > 0 else 'N/A') + '</td></tr>'
+        '<tr><td>Quality Value</td><td>' + str(segments.get('quality_value_pct', 0)) + '%</td>'
+        '<td>Trailing P/E</td><td style="font-weight:600;">' + (f'{tpe:.1f}x' if tpe and tpe > 0 else 'N/A') + '</td></tr>'
+        '<tr><td>Other</td><td>' + str(segments.get('other_pct', 0)) + '%</td>'
+        '<td>FCF Yield</td><td style="font-weight:600;">' + (f'{fcf_yield_val:.1f}%' if fcf_yield_val is not None else 'N/A') + '</td></tr>'
+        '<tr><td colspan="2" style="font-size:0.63rem; color:#64748b;">' + barbell.get('message', '') + '</td>'
+        '<td>P/S</td><td>' + (f'{ps:.1f}x' if ps else 'N/A') + '</td></tr>'
+        '</tbody></table>'
+    )
+    st.markdown(barbell_portfolio_table, unsafe_allow_html=True)
 
 # ===== TAB 6: PORTFOLIO CONTEXT =====
 with t6:
-    st.markdown("### Portfolio Optimization Context")
-    st.caption("AI/MPT-style position sizing suggestions based on conviction, correlation, and risk budget.")
+    st.markdown("### Portfolio Strategy")
 
+    # Portfolio recommendations table
+    port_rows = []
     for p in portfolio:
-        st.markdown(f"""
-        <div class="alpha-card" style="margin-bottom:10px;">
-            <div class="label">{p['rule']}</div>
-            <div style="font-size:0.85rem;font-weight:600;color:#0f172a;margin-top:4px;">{p['recommendation']}</div>
-            <div style="font-size:0.78rem;color:#64748b;margin-top:2px;">{p['detail']}</div>
-        </div>
-        """, unsafe_allow_html=True)
-
-    st.markdown("---")
-    st.markdown("#### Valuation Context (2026 Benchmarks)")
-    info = data['info']
-    fwd_pe = info.get('forwardPE')
-    tpe = info.get('trailingPE')
-    ps = info.get('priceToSales')
-    ev_ebitda = info.get('enterpriseToEbitda')
-    fcf_yield_val = None
-    fcf_val = info.get('freeCashflow')
-    mcap_val = info.get('marketCap')
-    if fcf_val and mcap_val and mcap_val > 0:
-        fcf_yield_val = (fcf_val / mcap_val) * 100
-
-    v1, v2, v3, v4, v5 = st.columns(5)
-    with v1:
-        fpe_display = f"{fwd_pe:.1f}x" if fwd_pe and fwd_pe > 0 else ("Neg" if fwd_pe and fwd_pe < 0 else "N/A")
-        fpe_color = "#16a34a" if (fwd_pe and 0 < fwd_pe < 20) else ("#ea580c" if (fwd_pe and 20 <= fwd_pe < 35) else "#dc2626")
-        st.markdown(metric_card("Forward P/E", fpe_display, sub="2026 avg ~22x", color=fpe_color), unsafe_allow_html=True)
-    with v2:
-        tpe_display = f"{tpe:.1f}x" if tpe and tpe > 0 else ("Neg" if tpe and tpe < 0 else "N/A")
-        st.markdown(metric_card("Trailing P/E", tpe_display, sub="2026 avg ~26x"), unsafe_allow_html=True)
-    with v3:
-        ps_display = f"{ps:.1f}x" if ps else "N/A"
-        st.markdown(metric_card("Price/Sales", ps_display), unsafe_allow_html=True)
-    with v4:
-        ev_ebitda_display = f"{ev_ebitda:.1f}x" if ev_ebitda and ev_ebitda > 0 else "N/A"
-        st.markdown(metric_card("EV/EBITDA", ev_ebitda_display), unsafe_allow_html=True)
-    with v5:
-        fy_display = f"{fcf_yield_val:.1f}%" if fcf_yield_val is not None else "N/A"
-        fy_color = "#16a34a" if (fcf_yield_val and fcf_yield_val > 5) else ("#ea580c" if (fcf_yield_val and fcf_yield_val > 0) else "#dc2626")
-        st.markdown(metric_card("FCF Yield", fy_display, sub=">5% = attractive", color=fy_color), unsafe_allow_html=True)
-
-    # Deployment strategy
-    st.markdown("---")
-    st.markdown("#### Suggested Deployment")
-    st.info("""
-    **Standard 2026 Approach:**
-    - Deploy 50% of intended capital as base position at current price
-    - Keep 50% as dry powder for -10% dips only
-    - Hard cap at the risk-adjusted position limit
-    - Review thesis quarterly after every earnings print
-    - If the position exceeds the 10% NAV limit: trim, don't hesitate — even Magnificent 7 names gap down
-    """)
+        port_rows.append('<tr><td style="font-weight:600;">' + p['rule'] + '</td><td>' + p['recommendation'] + '</td><td style="font-size:0.65rem; color:#64748b;">' + p['detail'] + '</td></tr>')
+    port_table = (
+        '<table style="width:100%; border-collapse:collapse; font-family:Inter,sans-serif; font-size:0.7rem; margin:6px 0;">'
+        '<colgroup><col style="width:16%"><col style="width:44%"><col style="width:40%"></colgroup>'
+        '<thead><tr style="border-bottom:2px solid #e2e8f0;">'
+        '<th style="padding:3px 8px; font-size:0.6rem; color:#94a3b8; text-transform:uppercase; letter-spacing:0.05em; text-align:left;">Rule</th>'
+        '<th style="padding:3px 8px; font-size:0.6rem; color:#94a3b8; text-transform:uppercase; letter-spacing:0.05em; text-align:left;">Recommendation</th>'
+        '<th style="padding:3px 8px; font-size:0.6rem; color:#94a3b8; text-transform:uppercase; letter-spacing:0.05em; text-align:left;">Detail</th>'
+        '</tr></thead><tbody>' + '\n'.join(port_rows) + '</tbody></table>'
+    )
+    st.markdown(port_table, unsafe_allow_html=True)
+    st.caption("Standard 2026 Approach: Deploy 50% base position + 50% dry powder for -10% dips. Hard cap at risk-adjusted limit. Review quarterly.")
 
 # ===== TAB 7: CONVICTION =====
 with t7:
