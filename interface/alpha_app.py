@@ -79,6 +79,9 @@ st.markdown("""
         box-shadow: 0 1px 2px rgba(0,0,0,0.03);
         transition: all 0.2s ease;
         height: 100%;
+        margin-bottom: 6px;
+        word-wrap: break-word;
+        overflow-wrap: break-word;
     }
     .alpha-card:hover {
         box-shadow: 0 4px 16px rgba(0,0,0,0.06);
@@ -92,18 +95,45 @@ st.markdown("""
         letter-spacing: 0.1em;
         font-weight: 600;
         margin-bottom: 4px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
     }
     .alpha-card .value {
         font-size: 1.2rem;
         font-weight: 700;
         color: #0f172a;
         line-height: 1.2;
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
     .alpha-card .sub {
         font-size: 0.65rem;
         color: #64748b;
         margin-top: 3px;
+        line-height: 1.3;
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
+
+    /* === SECTION SPACING === */
+    .section-spacer { height: 12px; }
+    .stMarkdown { margin-bottom: 4px !important; }
+    .stCaption { margin-top: 2px !important; margin-bottom: 6px !important; }
+
+    /* === PREVENT OVERLAP === */
+    div[data-testid="stVerticalBlock"] > div[data-testid="stVerticalBlock"] {
+        gap: 0.5rem !important;
+    }
+    div[data-testid="column"] {
+        padding: 0 4px;
+    }
+    .st-emotion-cache-0 { word-wrap: break-word; }
+    p { margin-bottom: 4px !important; }
+
+    /* === TAB CONTENT PADDING === */
+    div[data-testid="stTabs"] { margin-top: 8px; }
+    div[data-baseweb="tab-panel"] { padding-top: 8px !important; }
 
     /* === VERDICT BANNERS === */
     .verdict {
@@ -541,20 +571,55 @@ t1, t2, t3, t4, t5, t6, t7 = st.tabs([
 
 # ===== TAB 1: OVERVIEW =====
 with t1:
-    # Conviction banner
+    # =========================================================================
+    # CONVICTION SPECTRUM — full table with highlight
+    # =========================================================================
+    st.markdown("### Investment Conviction")
     conv = thesis['conviction']
-    conv_class = {
-        'HIGH CONVICTION': 'conviction-high',
-        'MODERATE CONVICTION': 'conviction-moderate',
-        'SELECTIVE': 'conviction-selective',
-        'OPPORTUNISTIC': 'conviction-opportunistic',
-        'PASS': 'conviction-pass',
-    }.get(conv, '')
-    st.markdown(f'<div class="verdict {conv_class}"><b>{conv}</b><br><small>{thesis["conviction_detail"]}</small></div>', unsafe_allow_html=True)
+    conviction_levels = [
+        {'level': 'HIGH CONVICTION', 'icon': '', 'detail': 'Wide moat + installed growth engine + clean risk. Core portfolio position.',
+         'color': '#059669', 'bg': '#ecfdf5', 'border': '#a7f3d0'},
+        {'level': 'MODERATE CONVICTION', 'icon': '', 'detail': 'Solid fundamentals with manageable risks. Consider barbell pairing.',
+         'color': '#2563eb', 'bg': '#eff6ff', 'border': '#bfdbfe'},
+        {'level': 'SELECTIVE', 'icon': '', 'detail': 'Good moat but elevated risk — reduce position size, tighten stop-losses.',
+         'color': '#ea580c', 'bg': '#fff7ed', 'border': '#fed7aa'},
+        {'level': 'OPPORTUNISTIC', 'icon': '', 'detail': 'Limited moat but favorable risk/reward — trade, do not marry.',
+         'color': '#ca8a04', 'bg': '#fefce8', 'border': '#fde68a'},
+        {'level': 'PASS', 'icon': '', 'detail': 'Neither strong moat nor clean risk. Better opportunities elsewhere in 2026.',
+         'color': '#dc2626', 'bg': '#fef2f2', 'border': '#fecaca'},
+    ]
+
+    # Build the conviction table as HTML rows
+    conviction_rows = []
+    for cl in conviction_levels:
+        is_active = cl['level'] == conv
+        color = cl['color']
+        bg = cl['bg']
+        border = cl['border']
+        icon = cl['icon']
+        level = cl['level']
+        detail = cl['detail']
+
+        if is_active:
+            row_style = 'background:' + bg + '; border:2px solid ' + color + '; border-radius:8px;'
+            check_html = '<span style="color:' + color + '; font-size:1.2rem; font-weight:700;">&#8592; SELECTED</span>'
+        else:
+            row_style = 'opacity:0.55; background:#fafafa; border:1px solid #e5e7eb; border-radius:8px;'
+            check_html = ''
+
+        row = '<div style="' + row_style + ' padding:10px 16px; margin:6px 0; display:flex; align-items:center; gap:14px; transition:all 0.2s;">'
+        row += '<span style="font-size:1.3rem; min-width:28px;">' + icon + '</span>'
+        row += '<span style="font-weight:700; font-size:0.82rem; color:' + color + '; min-width:150px;">' + level + '</span>'
+        row += '<span style="font-size:0.78rem; color:#475569; flex:1;">' + detail + '</span>'
+        row += check_html
+        row += '</div>'
+        conviction_rows.append(row)
+
+    st.markdown('\n'.join(conviction_rows), unsafe_allow_html=True)
 
     # Thesis paragraph
     st.markdown("### Investment Thesis")
-    st.markdown(f'<div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:6px;padding:16px 20px;font-size:0.9rem;line-height:1.6;color:#334155;">{thesis["thesis"]}</div>', unsafe_allow_html=True)
+    st.markdown(f'<div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:16px 20px;font-size:0.88rem;line-height:1.7;color:#334155;">{thesis["thesis"]}</div>', unsafe_allow_html=True)
 
     # Framework summary grid
     st.markdown("### Framework Summary")
@@ -1433,8 +1498,44 @@ with t6:
 with t7:
     st.markdown("### Investment Conviction & Thesis")
 
-    # Conviction banner
-    st.markdown(f'<div class="verdict {conv_class}"><h2 style="margin:0;">{conv}</h2><p style="margin:4px 0 0 0;">{thesis["conviction_detail"]}</p></div>', unsafe_allow_html=True)
+    # Conviction spectrum (same as Overview)
+    conv = thesis['conviction']
+    conviction_levels = [
+        {'level': 'HIGH CONVICTION', 'icon': '', 'detail': 'Wide moat + installed growth engine + clean risk. Core portfolio position.',
+         'color': '#059669', 'bg': '#ecfdf5', 'border': '#a7f3d0'},
+        {'level': 'MODERATE CONVICTION', 'icon': '', 'detail': 'Solid fundamentals with manageable risks. Consider barbell pairing.',
+         'color': '#2563eb', 'bg': '#eff6ff', 'border': '#bfdbfe'},
+        {'level': 'SELECTIVE', 'icon': '', 'detail': 'Good moat but elevated risk — reduce position size, tighten stop-losses.',
+         'color': '#ea580c', 'bg': '#fff7ed', 'border': '#fed7aa'},
+        {'level': 'OPPORTUNISTIC', 'icon': '', 'detail': 'Limited moat but favorable risk/reward — trade, do not marry.',
+         'color': '#ca8a04', 'bg': '#fefce8', 'border': '#fde68a'},
+        {'level': 'PASS', 'icon': '', 'detail': 'Neither strong moat nor clean risk. Better opportunities elsewhere in 2026.',
+         'color': '#dc2626', 'bg': '#fef2f2', 'border': '#fecaca'},
+    ]
+    conv_rows_t7 = []
+    for cl in conviction_levels:
+        is_active = cl['level'] == conv
+        color = cl['color']
+        bg = cl['bg']
+        icon = cl['icon']
+        level = cl['level']
+        detail = cl['detail']
+
+        if is_active:
+            row_style = 'background:' + bg + '; border:2px solid ' + color + '; border-radius:8px;'
+            check_html = '<span style="color:' + color + '; font-size:1.1rem; font-weight:700;">&#8592; SELECTED</span>'
+        else:
+            row_style = 'opacity:0.5; background:#fafafa; border:1px solid #e5e7eb; border-radius:8px;'
+            check_html = ''
+
+        row = '<div style="' + row_style + ' padding:9px 16px; margin:5px 0; display:flex; align-items:center; gap:12px;">'
+        row += '<span style="font-size:1.2rem; min-width:24px;">' + icon + '</span>'
+        row += '<span style="font-weight:700; font-size:0.8rem; color:' + color + '; min-width:140px;">' + level + '</span>'
+        row += '<span style="font-size:0.76rem; color:#475569; flex:1;">' + detail + '</span>'
+        row += check_html
+        row += '</div>'
+        conv_rows_t7.append(row)
+    st.markdown('\n'.join(conv_rows_t7), unsafe_allow_html=True)
 
     # Full thesis
     st.markdown("#### One-Paragraph Thesis")
