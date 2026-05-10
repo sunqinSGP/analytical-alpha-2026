@@ -564,9 +564,10 @@ st.markdown(f"""
 # MAIN TAB BAR
 # ===========================================================================
 st.markdown("---")
-t1, t2, t3, t4, t5, t6, t7 = st.tabs([
+t1, t2, t3, t4, t5, t6, t7, t8 = st.tabs([
     "1. Overview", "2. Quantitative", "3. Qualitative Moat",
-    "4. 2026 Themes", "5. Risk Management", "6. Portfolio Context", "7. Conviction"
+    "4. 2026 Themes", "5. Risk Management", "6. Portfolio Context", "7. Conviction",
+    "8. Screener"
 ])
 
 # ===== TAB 1: OVERVIEW =====
@@ -1666,4 +1667,155 @@ with t7:
     """)
 
     st.markdown("---")
-    st.caption(f"Not financial advice. Public data via Yahoo Finance. Analysis generated {datetime.now().strftime('%Y-%m-%d %H:%M')} — 2026 Strategic Growth Investment Framework")
+# ===== TAB 8: SCREENER =====
+with t8:
+    st.markdown("### High Conviction Stock Screener")
+    st.caption("Screen 114 stocks across US, SGX, HKEX, and EU markets for Platinum, Gold, and Silver conviction tiers.")
+
+    # Watchlist
+    WATCHLIST = [
+        # US Tech - SaaS/Cloud
+        'MSFT','CRM','ADBE','NOW','SNOW','DDOG','CRWD','PANW','ZS','QLYS','NET','MDB','HUBS','TEAM','WDAY','INTU','ADSK','PLTR',
+        # US Tech - Semis/AI Infra
+        'NVDA','AMD','AVGO','MU','MRVL','AMAT','LRCX','KLAC','TXN','QCOM','INTC','SMCI','ANET','DELL','STX','WDC',
+        # US Mega Cap
+        'AAPL','GOOGL','AMZN','META','TSLA',
+        # Energy/Industrial
+        'BE','NEE','GEV','FSLR','CEG','VST','XOM','CVX','COP','CAT','GE','HON','EMR','ETN',
+        # Healthcare/Biopharma
+        'LLY','NVO','BMY','ALGN','CNC','UNH','JNJ','ABBV','MRK','PFE','REGN','VRTX','SDGR','MRNA',
+        # Financials
+        'JPM','BAC','WFC','GS','MS','BLK','V','MA','AXP',
+        # Consumer/Retail
+        'WMT','COST','HD','LOW','NKE','SBUX','MCD','TGT',
+        # SGX
+        'D05.SI','O39.SI','U11.SI','Z74.SI','C52.SI','BN4.SI','S68.SI','C09.SI','F34.SI','S63.SI',
+        # HKEX
+        '0700.HK','9988.HK','3690.HK','9618.HK','1299.HK','0005.HK','0388.HK','2318.HK','0941.HK','0016.HK',
+        # EU/Global
+        'SAP','ASML','AZN','HSBC','BHP','RIO','BP','SHEL',
+    ]
+
+    if st.button("Run Screener (114 stocks, ~30s)", type="primary", use_container_width=True):
+        from concurrent.futures import ThreadPoolExecutor, as_completed
+        import time
+
+        progress = st.progress(0)
+        status = st.empty()
+
+        results = []
+        errors = []
+        start_time = time.time()
+        total = len(WATCHLIST)
+
+        with ThreadPoolExecutor(max_workers=8) as executor:
+            futures = {executor.submit(alpha_analysis, t): t for t in WATCHLIST}
+            for i, future in enumerate(as_completed(futures)):
+                ticker_scan = futures[future]
+                res = future.result()
+                if 'error' in res:
+                    errors.append({'ticker': ticker_scan, 'error': res['error']})
+                else:
+                    results.append({
+                        'ticker': ticker_scan,
+                        'name': res['data']['name'],
+                        'nob': res['nob']['name'],
+                        'moat': res['qualitative']['moat']['moat_rating'],
+                        'circ_delta': res['qualitative']['moat'].get('circumvention_delta', 0),
+                        'moat_trend': res['qualitative']['moat_performance']['performance'],
+                        'risk': res['risk_management']['risk_factors']['risk_score'],
+                        'nrr': res['quantitative']['net_revenue_retention'].get('estimated_nrr_pct'),
+                        'fwd_inflection': res['quantitative']['forward_rule_of_40'].get('inflection_signal', ''),
+                        'conviction': res['thesis']['conviction'],
+                        'price': res['data']['price'],
+                        'sector': res['data']['sector'],
+                        'fwdr40': res['quantitative']['forward_rule_of_40'].get('forward_rule_40'),
+                    })
+                progress.progress((i + 1) / total)
+                elapsed = time.time() - start_time
+                status.text(f"Scanning: {i+1}/{total} | {ticker_scan} | {elapsed:.0f}s")
+
+        progress.empty()
+        status.empty()
+
+        if not results:
+            st.warning("No results. Check network connection.")
+            st.stop()
+
+        df = pd.DataFrame(results)
+
+        # ---- Tier filters ----
+        platinum = df[
+            (df['moat'] >= 6) & (df['risk'] <= 1) & (df['moat_trend'] == 'COMPOUNDING') &
+            ((df['nrr'].notna() & (df['nrr'] >= 120)) | (df['fwd_inflection'].isin(['MASSIVE INFLECTION', 'POSITIVE INFLECTION', 'BENCHMARK CROSSOVER'])))
+        ].sort_values('moat', ascending=False)
+
+        gold = df[
+            (df['moat'] >= 5) & (df['risk'] <= 2) &
+            ((df['nrr'].notna() & (df['nrr'] >= 120)) | (df['fwd_inflection'].isin(['MASSIVE INFLECTION', 'POSITIVE INFLECTION', 'BENCHMARK CROSSOVER'])))
+        ].sort_values('moat', ascending=False)
+
+        silver = df[
+            (df['moat'] >= 4) & (df['risk'] <= 4) & (df['circ_delta'] >= 4)
+        ].sort_values('moat', ascending=False)
+
+        # ---- Display tiers ----
+        def show_tier(subset, label, color, emoji):
+            if len(subset) == 0:
+                return
+            st.markdown(f"### {emoji} {label} — {len(subset)} stocks")
+            st.caption({
+                'PLATINUM': 'Moat >= 6 | Risk <= 1 | Compounding | Growth signal',
+                'GOLD': 'Moat >= 5 | Risk <= 2 | Growth signal',
+                'SILVER': 'Moat >= 4 | Risk <= 4 | Circ.Delta >= 4',
+            }.get(label, ''))
+
+            display = subset[['ticker','name','nob','moat','circ_delta','moat_trend','risk','nrr','fwd_inflection','price','sector']].copy()
+            display['moat'] = display['moat'].apply(lambda x: f"{x:.1f}")
+            display['nrr'] = display['nrr'].apply(lambda x: f"{x:.0f}%" if pd.notna(x) else 'N/A')
+            display['price'] = display['price'].apply(lambda x: f"${x:.2f}" if pd.notna(x) else 'N/A')
+            display.columns = ['Ticker','Name','NoB','Moat','Circ.D','Trend','Risk','NRR','Fwd Inflection','Price','Sector']
+
+            st.dataframe(display, width='stretch', hide_index=True,
+                column_config={
+                    'Ticker': st.column_config.TextColumn(width='small'),
+                    'Name': st.column_config.TextColumn(width='medium'),
+                    'Moat': st.column_config.TextColumn(width='small'),
+                    'Circ.D': st.column_config.TextColumn(width='small'),
+                    'Trend': st.column_config.TextColumn(width='small'),
+                    'Risk': st.column_config.TextColumn(width='small'),
+                    'NRR': st.column_config.TextColumn(width='small'),
+                    'Fwd Inflection': st.column_config.TextColumn(width='medium'),
+                    'Price': st.column_config.TextColumn(width='small'),
+                })
+
+        show_tier(platinum, 'PLATINUM', '#059669', '')
+        show_tier(gold, 'GOLD', '#d97706', '')
+        show_tier(silver, 'SILVER', '#6b7280', '')
+
+        # ---- Summary stats ----
+        st.markdown("---")
+        st.markdown("#### Screening Summary")
+        sm1, sm2, sm3, sm4, sm5 = st.columns(5)
+        with sm1: st.metric("Total Scanned", len(WATCHLIST))
+        with sm2: st.metric("PLATINUM", len(platinum))
+        with sm3: st.metric("GOLD", len(gold))
+        with sm4: st.metric("SILVER", len(silver))
+        with sm5: st.metric("Time", f"{time.time() - start_time:.0f}s")
+
+        # Conviction distribution
+        st.caption("Conviction Distribution")
+        dist_cols = st.columns(5)
+        for i, level in enumerate(['HIGH CONVICTION', 'MODERATE CONVICTION', 'SELECTIVE', 'OPPORTUNISTIC', 'PASS']):
+            count = len(df[df['conviction'] == level])
+            with dist_cols[i]:
+                st.metric(level, count)
+
+        if errors:
+            st.warning(f"{len(errors)} errors: {', '.join(e['ticker'] for e in errors[:5])}")
+
+    else:
+        st.info("Click **Run Screener** to scan 114 stocks across US, Singapore, Hong Kong, and European markets. Screening takes ~30 seconds using multi-threaded analysis.")
+        st.caption("The screener applies the full Analytical Alpha framework to each stock, then filters by moat strength, risk profile, and forward-looking growth signals.")
+
+st.caption(f"Not financial advice. Public data via Yahoo Finance. Analysis generated {datetime.now().strftime('%Y-%m-%d %H:%M')} — 2026 Strategic Growth Investment Framework")
