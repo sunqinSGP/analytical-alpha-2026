@@ -630,169 +630,151 @@ with t1:
     st.markdown("### Investment Thesis")
     st.markdown(f'<div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:16px 20px;font-size:0.88rem;line-height:1.7;color:#334155;">{thesis["thesis"]}</div>', unsafe_allow_html=True)
 
-    # Framework summary grid
-    st.markdown("### Framework Summary")
-    f1, f2, f3, f4 = st.columns(4)
-    with f1:
-        fwd_r40_overview = quant['forward_rule_of_40']
-        fwd_r40_val_ov = fwd_r40_overview.get('forward_rule_40')
-        fwd_inflection_ov = fwd_r40_overview.get('inflection_signal', '')
-        rpo_ov = quant['rpo']
-        rpo_signal_ov = rpo_ov.get('leading_indicator_signal', 'N/A')
+    # Framework summary — compact table
+    def fmt_pct(v):
+        return f"{v:.0f}%" if v is not None else "N/A"
+    def fmt_num(v):
+        return f"{v:.0f}" if v is not None else "N/A"
 
-        # NoB-specific metrics (built with simple concatenation, no nested f-strings)
-        def fmt_pct(v):
-            return f"{v:.0f}%" if v is not None else "N/A"
+    fwd_r40_overview = quant['forward_rule_of_40']
+    fwd_r40_val_ov = fwd_r40_overview.get('forward_rule_40')
+    fwd_inflection_ov = fwd_r40_overview.get('inflection_signal', '')
+    rpo_signal_ov = quant['rpo'].get('leading_indicator_signal', 'N/A')
 
-        def fmt_num(v, unit=""):
-            return f"{v:.0f}{unit}" if v is not None else "N/A"
+    # Build NoB-specific metric strings
+    q_metrics = []
+    if nob_type == 'high_growth_saas':
+        saas = quant.get('saas_filter', {})
+        q_metrics = [
+            'R40(FCF) ' + fmt_num(r40_val),
+            'LTV:CAC ' + (f"{saas.get('ltv_cac_ratio')}:1" if saas.get('ltv_cac_ratio') is not None else 'N/A'),
+            'CAC ' + (f"{saas.get('cac_payback_months'):.0f}mo" if saas.get('cac_payback_months') else 'N/A'),
+            'GM ' + fmt_pct(gm_val),
+            'NRR ' + fmt_pct(nrr_val),
+        ]
+    elif nob_type == 'ai_infra_semiconductor':
+        ind = quant.get('industrial_filter', {})
+        q_metrics = [
+            'Rev ' + fmt_pct(ind.get('revenue_growth_pct')),
+            'Backlog ' + fmt_pct(ind.get('backlog_growth_pct')),
+            'Conv ' + (f"{ind.get('conversion_velocity'):.2f}x" if ind.get('conversion_velocity') is not None else 'N/A'),
+            'EPS ' + (ind.get('revision_led_eps', {}).get('rank', 'N/A')[:20]),
+        ]
+    elif nob_type == 'energy_industrial':
+        ind = quant.get('industrial_filter', {})
+        q_metrics = [
+            'Rev ' + fmt_pct(ind.get('revenue_growth_pct')),
+            'Backlog ' + fmt_pct(ind.get('backlog_growth_pct')),
+            'Pipeline ' + ('GW' if ind.get('power_pipeline_note') else 'N/A'),
+        ]
+    elif nob_type == 'biopharma':
+        bio = quant.get('biopharma_filter', {})
+        q_metrics = [
+            'Stage ' + bio.get('clinical_stage', 'N/A'),
+            'rNPV ' + fmt_pct(bio.get('discount_rate_pct')),
+            'AI ' + ('Yes' if bio.get('ai_attrition_premium') else 'No'),
+            'Rev ' + fmt_pct(bio.get('revenue_growth_pct')),
+        ]
+    elif nob_type == 'traditional_value':
+        val = quant.get('value_filter', {})
+        tpe = val.get('trailing_pe')
+        q_metrics = [
+            'P/E ' + (f"{tpe:.1f}x" if tpe and tpe > 0 else 'N/A'),
+            'P/B ' + (f"{val.get('price_to_book'):.2f}x" if val.get('price_to_book') is not None else 'N/A'),
+            'Div ' + (f"{val.get('dividend_yield_pct'):.1f}%" if val.get('dividend_yield_pct') is not None else 'N/A'),
+            'Score ' + (f"{val.get('value_score')}/10" if val.get('value_score') is not None else 'N/A'),
+        ]
+    elif nob_type == 'high_growth_general':
+        gf = quant.get('growth_filter', {})
+        runway = gf.get('cash_runway_years')
+        q_metrics = [
+            'Rev ' + fmt_pct(gf.get('revenue_growth_pct')),
+            'Runway ' + (f"{runway:.0f}yrs" if runway is not None else 'N/A'),
+            'Score ' + (f"{gf.get('growth_score')}/10" if gf.get('growth_score') is not None else 'N/A'),
+        ]
+    else:
+        q_metrics = [
+            'R40 ' + fmt_num(r40_val),
+            'GM ' + fmt_pct(gm_val),
+            'NRR ' + fmt_pct(nrr_val),
+        ]
 
-        lines = []
-        lines.append('<div class="alpha-card">')
-        lines.append(f'<div class="label">Quantitative Scorecard &mdash; {nob["name"]}</div>')
-        lines.append('<div style="margin-top:8px;font-size:0.82rem;line-height:1.6;">')
+    # Moat metrics
+    temporal = moat['temporal_width']; efficiency = moat['efficiency_width']; trust = moat['trust_width']
+    perf_sig = qual.get('moat_performance', {}).get('performance', '')
 
-        if nob_type == 'high_growth_saas':
-            saas = quant.get('saas_filter', {})
-            ltv = saas.get('ltv_cac_ratio')
-            cac = saas.get('cac_payback_months')
-            lines.append('<b>SaaS Efficiency Metrics</b><br>')
-            lines.append(f'Rule of 40 (FCF): <b>{fmt_num(r40_val)}</b> (benchmark &ge;40)<br>')
-            lines.append(f'LTV:CAC Ratio: <b>{f"{ltv}:1" if ltv is not None else "N/A"}</b> (min 3:1)<br>')
-            lines.append(f'CAC Payback: <b>{f"{cac:.1f}mo" if cac is not None else "N/A"}</b> (&le;12mo best)<br>')
-            lines.append(f'Gross Margin: <b>{fmt_pct(gm_val)}</b> (&ge;75% for SaaS)<br>')
-            nrr_str = fmt_pct(nrr_val)
-            if nrr.get('nrr_capped'): nrr_str += ' (proxy cap)'
-            lines.append(f'Est. NRR: <b>{nrr_str}</b> (&ge;106% retention)<br>')
-        elif nob_type == 'ai_infra_semiconductor':
-            ind = quant.get('industrial_filter', {})
-            rev = ind.get('revision_led_eps', {})
-            lines.append('<b>Semiconductor Throughput</b><br>')
-            lines.append(f'Revenue Growth: <b>{fmt_pct(ind.get("revenue_growth_pct"))}</b><br>')
-            lines.append(f'Backlog Growth: <b>{fmt_pct(ind.get("backlog_growth_pct"))}</b> (&ge;20% target)<br>')
-            conv = ind.get('conversion_velocity')
-            lines.append(f'Conversion Velocity: <b>{f"{conv:.2f}x" if conv is not None else "N/A"}</b><br>')
-            lines.append(f'Revision-Led EPS: <b>{rev.get("rank", "N/A")}</b><br>')
-        elif nob_type == 'energy_industrial':
-            ind = quant.get('industrial_filter', {})
-            lines.append('<b>Energy &amp; Industrial Throughput</b><br>')
-            lines.append(f'Revenue Growth: <b>{fmt_pct(ind.get("revenue_growth_pct"))}</b><br>')
-            lines.append(f'Backlog Growth: <b>{fmt_pct(ind.get("backlog_growth_pct"))}</b><br>')
-            if ind.get('power_pipeline_note'):
-                lines.append('Power Pipeline: <b>Monitor GW capacity</b><br>')
-        elif nob_type == 'biopharma':
-            bio = quant.get('biopharma_filter', {})
-            lines.append('<b>Biopharma Milestone Metrics</b><br>')
-            lines.append(f'Clinical Stage: <b>{bio.get("clinical_stage", "N/A")}</b><br>')
-            lines.append(f'rNPV Discount Rate: <b>{fmt_pct(bio.get("discount_rate_pct"))}</b><br>')
-            lines.append(f'AI Attrition Premium: <b>{"YES" if bio.get("ai_attrition_premium") else "No"}</b><br>')
-            lines.append(f'Revenue Growth: <b>{fmt_pct(bio.get("revenue_growth_pct"))}</b><br>')
-            lines.append(f'Price/Revenue: <b>{bio.get("price_to_revenue", "N/A")}</b><br>')
-        elif nob_type == 'traditional_value':
-            val = quant.get('value_filter', {})
-            lines.append('<b>Traditional Value Metrics</b><br>')
-            tpe = val.get('trailing_pe')
-            lines.append(f'Trailing P/E: <b>{f"{tpe:.1f}x" if tpe and tpe > 0 else "N/A"}</b><br>')
-            pb = val.get('price_to_book')
-            lines.append(f'Price/Book: <b>{f"{pb:.2f}x" if pb is not None else "N/A"}</b><br>')
-            div = val.get('dividend_yield_pct')
-            lines.append(f'Dividend Yield: <b>{f"{div:.1f}%" if div is not None else "N/A"}</b><br>')
-            lines.append(f'Value Score: <b>{val.get("value_score", "N/A")}/10</b> — {val.get("value_label", "")}<br>')
-            dte = val.get('debt_to_equity')
-            lines.append(f'Debt/Equity: <b>{f"{dte:.0f}" if dte is not None else "N/A"}</b><br>')
-        elif nob_type == 'high_growth_general':
-            gf = quant.get('growth_filter', {})
-            lines.append('<b>High-Growth Metrics</b><br>')
-            lines.append(f'Revenue Growth: <b>{fmt_pct(gf.get("revenue_growth_pct"))}</b><br>')
-            runway = gf.get('cash_runway_years')
-            lines.append(f'Cash Runway: <b>{f"{runway:.0f}yrs" if runway is not None else "N/A"}</b><br>')
-            lines.append(f'Growth Score: <b>{gf.get("growth_score", "N/A")}/10</b><br>')
-            lines.append(f'Growth Decelerating: <b>{"Yes" if gf.get("growth_decelerating") else "No"}</b><br>')
-        else:
-            arr_val = arr.get('estimated_arr_growth_pct')
-            lines.append('<b>General Metrics</b><br>')
-            lines.append(f'Rule of 40 (FCF): <b>{fmt_num(r40_val)}</b><br>')
-            lines.append(f'Gross Margin: <b>{fmt_pct(gm_val)}</b><br>')
-            lines.append(f'Est. ARR Growth: <b>{fmt_pct(arr_val)}</b><br>')
-            nrr_str = fmt_pct(nrr_val)
-            if nrr.get('nrr_capped'): nrr_str += ' (capped)'
-            lines.append(f'Est. NRR: <b>{nrr_str}</b><br>')
-            lines.append(f'Momentum: <b>{momentum.get("rank_label", "N/A")}</b><br>')
+    # Thematic
+    primary_name = thematic.get('primary_name', 'None')
+    primary_conviction = thematic.get('primary_conviction', 0)
 
-        # Forward-looking
-        fwd_r40_str = fmt_num(fwd_r40_val_ov) if fwd_r40_val_ov is not None else "N/A"
-        lines.append('<b>Forward-Looking</b><br>')
-        lines.append(f'Forward R40: <b>{fwd_r40_str}</b> &mdash; {fwd_inflection_ov}<br>')
-        lines.append(f'RPO Signal: <b>{rpo_signal_ov}</b><br>')
-        lines.append('</div>')
-        lines.append('</div>')
+    # Risk
+    risk_max = risk_factors.get('max_suggested_position', 10)
+    position = risk_mgmt['position_sizing']
 
-        scorecard_html = '\n'.join(lines)
-        st.markdown(scorecard_html, unsafe_allow_html=True)
-    with f2:
-        temporal = moat['temporal_width']
-        efficiency = moat['efficiency_width']
-        trust = moat['trust_width']
-        st.markdown(f"""
-        <div class="alpha-card">
-            <div class="label">Moat Architecture</div>
-            <div style="margin-top:8px;font-size:0.82rem;line-height:1.6;">
-            Temporal (R&D Lag): <b>{temporal['score']}/5</b><br>
-            Efficiency (Performance): <b>{efficiency['score']}/5</b><br>
-            Trust (Validation): <b>{trust['score']}/5</b><br>
-            <b>Composite: {moat_val}/10 — {moat['moat_label']}</b>
-            </div>
-        </div>
-        """, unsafe_allow_html=True)
-    with f3:
-        primary_name = thematic.get('primary_name', 'None')
-        primary_conviction = thematic.get('primary_conviction', 0)
-        secondary = ', '.join(t['name'] for t in thematic.get('secondary_themes', [])) or 'None'
-        st.markdown(f"""
-        <div class="alpha-card">
-            <div class="label">2026 Thematic Alignment</div>
-            <div style="margin-top:8px;font-size:0.82rem;line-height:1.6;">
-            Primary: <b>{primary_name}</b> (score: {primary_conviction}/10)<br>
-            Secondary: <b>{secondary}</b><br>
-            Catalyst: <small>{thematic.get('primary_catalyst', 'N/A')}</small>
-            </div>
-        </div>
-        """, unsafe_allow_html=True)
-    with f4:
-        risk_max = risk_factors.get('max_suggested_position', 10)
-        ms = risk_mgmt['mental_stop_loss']
-        position = risk_mgmt['position_sizing']
-        barbell = risk_mgmt['barbell_check']
-        st.markdown(f"""
-        <div class="alpha-card">
-            <div class="label">Risk Framework</div>
-            <div style="margin-top:8px;font-size:0.82rem;line-height:1.6;">
-            Risk Level: <b>{risk_level}</b><br>
-            Max Position: <b>{risk_max}% NAV</b><br>
-            Stop-Loss: {position['action']}<br>
-            Barbell: {'✓' if barbell.get('valid') else '⚠'} {barbell.get('message', '')}
-            </div>
-        </div>
-        """, unsafe_allow_html=True)
+    # Build compact table
+    summary_html = (
+        '<table style="width:100%; border-collapse:collapse; font-family:Inter,sans-serif; margin:8px 0;">'
+        '<colgroup><col style="width:28%"><col style="width:24%"><col style="width:24%"><col style="width:24%"></colgroup>'
+        '<thead><tr style="border-bottom:2px solid #e2e8f0;">'
+        '<th style="padding:5px 10px; font-size:0.62rem; color:#94a3b8; text-transform:uppercase; letter-spacing:0.06em; text-align:left;">'
+        'Quantitative &mdash; ' + nob['name'] + '</th>'
+        '<th style="padding:5px 10px; font-size:0.62rem; color:#94a3b8; text-transform:uppercase; letter-spacing:0.06em; text-align:left;">'
+        'Moat Architecture</th>'
+        '<th style="padding:5px 10px; font-size:0.62rem; color:#94a3b8; text-transform:uppercase; letter-spacing:0.06em; text-align:left;">'
+        '2026 Thematic</th>'
+        '<th style="padding:5px 10px; font-size:0.62rem; color:#94a3b8; text-transform:uppercase; letter-spacing:0.06em; text-align:left;">'
+        'Risk Framework</th>'
+        '</tr></thead><tbody><tr style="vertical-align:top;">'
 
-    # Price performance
+        # Quantitative column
+        + '<td style="padding:5px 10px; font-size:0.7rem; line-height:1.5;">'
+        + '<br>'.join(q_metrics)
+        + '<br><span style="color:#94a3b8;">Fwd R40 ' + (f'{fwd_r40_val_ov:.0f}' if fwd_r40_val_ov is not None else 'N/A') + ' &mdash; ' + fwd_inflection_ov + '</span>'
+        + '</td>'
+
+        # Moat column
+        + '<td style="padding:5px 10px; font-size:0.7rem; line-height:1.5;">'
+        + f'Temporal: <b>{temporal["score"]}/5</b><br>'
+        + f'Efficiency: <b>{efficiency["score"]}/5</b><br>'
+        + f'Trust: <b>{trust["score"]}/5</b><br>'
+        + f'<b>Composite: {moat_val}/10</b><br>'
+        + f'<span style="font-size:0.65rem; color:#64748b;">{moat["moat_label"]}</span><br>'
+        + f'<span style="font-size:0.65rem; color:#64748b;">Trend: {perf_sig}</span>'
+        + '</td>'
+
+        # Thematic column
+        + '<td style="padding:5px 10px; font-size:0.7rem; line-height:1.5;">'
+        + f'Primary: <b>{primary_name}</b> ({primary_conviction}/10)<br>'
+        + f'<span style="font-size:0.65rem; color:#64748b;">{thematic.get("primary_catalyst", "")}</span>'
+        + '</td>'
+
+        # Risk column
+        + '<td style="padding:5px 10px; font-size:0.7rem; line-height:1.5;">'
+        + f'Risk: <b>{risk_level}</b> ({risk_factors.get("risk_score", 0)})<br>'
+        + f'Max: <b>{risk_max}% NAV</b><br>'
+        + f'<span style="font-size:0.65rem; color:#64748b;">{position["action"]}</span>'
+        + '</td>'
+
+        + '</tr></tbody></table>'
+    )
+    st.markdown(summary_html, unsafe_allow_html=True)
+
+    # Price performance — compact row
     if perf:
-        st.markdown("### Price Performance")
-        pc1, pc2, pc3, pc4, pc5, pc6 = st.columns(6)
-        for i, (label, col) in enumerate([
-            ('1m', pc1), ('3m', pc2), ('6m', pc3), ('1y', pc4)
-        ]):
-            if label in perf:
-                with col:
-                    val = perf[label]
-                    c = "#16a34a" if val >= 0 else "#dc2626"
-                    st.markdown(f'<div class="alpha-card" style="text-align:center;"><div class="label">{label}</div><div class="value" style="color:{c};">{val:+.1f}%</div></div>', unsafe_allow_html=True)
-        with pc5:
-            if '52w_high' in perf:
-                st.markdown(f'<div class="alpha-card" style="text-align:center;"><div class="label">52W High</div><div class="value" style="font-size:1rem;">{cs}{perf["52w_high"]:.2f}</div></div>', unsafe_allow_html=True)
-        with pc6:
-            if '52w_low' in perf:
-                st.markdown(f'<div class="alpha-card" style="text-align:center;"><div class="label">52W Low</div><div class="value" style="font-size:1rem;">{cs}{perf["52w_low"]:.2f}</div></div>', unsafe_allow_html=True)
+        perf_items = []
+        for lbl in ['1m', '3m', '6m', '1y']:
+            if lbl in perf:
+                v = perf[lbl]
+                c = '#059669' if v >= 0 else '#dc2626'
+                perf_items.append(f'<span style="font-weight:600; font-size:0.72rem;">{lbl}</span> <span style="color:{c}; font-weight:700; font-size:0.75rem;">{v:+.1f}%</span>')
+        if '52w_high' in perf:
+            perf_items.append(f'<span style="font-weight:600; font-size:0.72rem;">52W</span> <span style="color:#64748b; font-size:0.72rem;">{cs}{perf["52w_low"]:.0f}&ndash;{cs}{perf["52w_high"]:.0f}</span>')
+        st.markdown(
+            '<div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:6px; padding:6px 14px; margin:6px 0; display:flex; gap:20px; align-items:center;">'
+            + '  '.join(perf_items) +
+            '</div>',
+            unsafe_allow_html=True
+        )
 
 # ===== TAB 2: QUANTITATIVE QUADRANT =====
 with t2:
