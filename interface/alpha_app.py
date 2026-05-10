@@ -460,6 +460,7 @@ with c4:
     c4_class = 'kpi green' if (gm_val and gm_val >= 75) else ('kpi' if (gm_val and gm_val >= 40) else 'kpi red')
     st.markdown(f'<div class="{c4_class}"><div class="kpi-label">Gross Margin</div><div class="kpi-value">{f"{gm_val:.0f}%" if gm_val is not None else "N/A"}</div></div>', unsafe_allow_html=True)
 with c5:
+    nrr = quant['net_revenue_retention']
     nrr_val = nrr.get('estimated_nrr_pct')
     c5_class = 'kpi green' if (nrr_val and nrr_val >= 120) else ('kpi teal' if (nrr_val and nrr_val >= 106) else 'kpi')
     nrr_sub_kpi = "Installed growth" if (nrr_val and nrr_val >= 120) else ("Above benchmark" if (nrr_val and nrr_val >= 106) else "")
