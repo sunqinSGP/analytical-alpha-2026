@@ -66,12 +66,12 @@ st.markdown("""
     .kpi {
         background: #fff; border-radius: 12px; padding: 16px 18px;
         box-shadow: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
-        border: 1px solid #e8ecf1; transition: all 0.2s ease;
+        border: 1px solid #e8ecf1; transition: box-shadow 0.2s ease, transform 0.2s ease, border-color 0.2s ease;
     }
     .kpi:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.08); transform: translateY(-1px); }
-    .kpi .kpi-label { font-size: 0.62rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.7px; color: #94a3b8; margin-bottom: 5px; }
+    .kpi .kpi-label { font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.7px; color: #94a3b8; margin-bottom: 5px; }
     .kpi .kpi-value { font-size: 1.4rem; font-weight: 800; color: #0f172a; line-height: 1.2; }
-    .kpi .kpi-sub { font-size: 0.65rem; font-weight: 500; color: #94a3b8; margin-top: 3px; }
+    .kpi .kpi-sub { font-size: 0.75rem; font-weight: 500; color: #94a3b8; margin-top: 3px; }
     .kpi.signal-green { border-left: 4px solid #10b981; background: linear-gradient(135deg, #fff 0%, #f0fdf6 100%); }
     .kpi.signal-green .kpi-value { color: #059669; }
     .kpi.signal-amber { border-left: 4px solid #f59e0b; background: linear-gradient(135deg, #fff 0%, #fffbeb 100%); }
@@ -87,7 +87,7 @@ st.markdown("""
     .health-card {
         background: #fff; border-radius: 12px; padding: 18px 20px;
         box-shadow: 0 1px 3px rgba(0,0,0,0.06); border: 1px solid #e8ecf1;
-        text-align: center; transition: all 0.2s;
+        text-align: center; transition: box-shadow 0.2s ease;
     }
     .health-card:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
     .health-score {
@@ -110,7 +110,7 @@ st.markdown("""
     .verdict.conviction-pass { background: #fef2f2; border: 1px solid #fecaca; color: #991b1b; }
 
     /* === TAGS === */
-    .tag { display: inline-block; padding: 3px 10px; border-radius: 14px; font-size: 0.63rem; font-weight: 600; }
+    .tag { display: inline-block; padding: 3px 10px; border-radius: 14px; font-size: 0.75rem; font-weight: 600; }
     .tag.green { background: #d1fae5; color: #065f46; }
     .tag.red { background: #fee2e2; color: #991b1b; }
     .tag.amber { background: #fef3c7; color: #92400e; }
@@ -127,7 +127,7 @@ st.markdown("""
         margin: 8px 0 14px 0; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.04);
     }
     .stDataFrame th {
-        font-size: 0.65rem !important; padding: 10px 14px !important;
+        font-size: 0.75rem !important; padding: 10px 14px !important;
         background: #f8fafc !important; color: #64748b !important;
         font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;
         border-bottom: 2px solid #e2e8f0 !important;
@@ -142,7 +142,7 @@ st.markdown("""
     table { width: 100%; border-collapse: collapse; font-size: 0.78rem; }
     th {
         background: #f8fafc; color: #64748b; padding: 9px 14px;
-        text-align: left; font-weight: 700; font-size: 0.66rem;
+        text-align: left; font-weight: 700; font-size: 0.75rem;
         text-transform: uppercase; letter-spacing: 0.5px;
         border-bottom: 2px solid #e2e8f0;
     }
@@ -160,8 +160,8 @@ st.markdown("""
         font-size: 0.82rem !important; padding: 9px 14px !important;
         background: #fff !important; font-weight: 500 !important;
     }
-    input:focus, select:focus {
-        border-color: #2563eb !important; outline: none !important;
+    input:focus-visible, select:focus-visible {
+        border-color: #2563eb !important; outline: 2px solid #2563eb !important; outline-offset: 1px;
         box-shadow: 0 0 0 3px rgba(37,99,235,0.1) !important;
     }
 
@@ -197,6 +197,14 @@ st.markdown("""
     div[data-testid="column"] { padding: 0 4px; }
     div[data-testid="stTabs"] { margin-top: 6px; }
     div[data-baseweb="tab-panel"] { padding-top: 8px !important; }
+
+    /* === ACCESSIBILITY === */
+    @media (prefers-reduced-motion: reduce) {
+        *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+    }
+    .kpi, .health-card, button, a, .alpha-card { touch-action: manipulation; }
+    td.num, th.num { font-variant-numeric: tabular-nums; }
+    h1, h2, h3 { text-wrap: balance; }
 </style>
 """, unsafe_allow_html=True)
 
@@ -1445,7 +1453,7 @@ with t8:
         'SAP','ASML','AZN','HSBC','BHP','RIO','BP','SHEL',
     ]
 
-    if st.button("Run Screener (114 stocks, ~30s)", type="primary", use_container_width=True):
+    if st.button("Scan 114 Stocks", type="primary", use_container_width=True):
         from concurrent.futures import ThreadPoolExecutor, as_completed
         import time
 
@@ -1564,7 +1572,7 @@ with t8:
             st.warning(f"{len(errors)} errors: {', '.join(e['ticker'] for e in errors[:5])}")
 
     else:
-        st.info("Click **Run Screener** to scan 114 stocks across US, Singapore, Hong Kong, and European markets. Screening takes ~30 seconds using multi-threaded analysis.")
+        st.info("Click **Scan 114 Stocks** to screen US, Singapore, Hong Kong, and European markets. Multi-threaded analysis completes in approximately 30 seconds.")
         st.caption("The screener applies the full Analytical Alpha framework to each stock, then filters by moat strength, risk profile, and forward-looking growth signals.")
 
-st.caption(f"Not financial advice. Public data via Yahoo Finance. Analysis generated {datetime.now().strftime('%Y-%m-%d %H:%M')} — 2026 Strategic Growth Investment Framework")
+st.caption(f"Not financial advice. Public data via Yahoo Finance. Analysis generated {datetime.now().strftime('%B&nbsp;%d,&nbsp;%Y at %H:%M')} — 2026 Strategic Growth Investment Framework")
