@@ -21,83 +21,132 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
-# Custom CSS
+# Professional CSS
 st.markdown("""
 <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap');
 
+    /* === ROOT & RESET === */
     html, body, [class*="css"] {
-        font-size: 13px;
-        font-family: 'Inter', -apple-system, sans-serif;
+        font-size: 14px;
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
         line-height: 1.5;
-        color: #1a1a2e;
+        color: #1e293b;
+        background: #f1f5f9;
     }
 
-    h1 { font-size: 1.4rem !important; font-weight: 800 !important; letter-spacing: -0.02em; margin-bottom: 0.3rem !important; color: #0f172a; }
-    h2 { font-size: 1.1rem !important; font-weight: 700 !important; margin-top: 0.5rem !important; margin-bottom: 0.3rem !important; color: #1e293b; }
-    h3 { font-size: 0.95rem !important; font-weight: 600 !important; margin-top: 0.4rem !important; margin-bottom: 0.2rem !important; color: #334155; }
+    /* === HIDE SIDEBAR & ADJUST APP === */
+    section[data-testid="stSidebar"] { display: none; }
+    .stApp { margin-top: -2rem; background: #f1f5f9; }
+    div[data-testid="stVerticalBlock"] { gap: 0.25rem; }
+    div[data-testid="stMetricValue"] { font-size: 1rem !important; }
+    div[data-testid="stMetricLabel"] { font-size: 0.7rem !important; }
 
+    /* === TYPOGRAPHY === */
+    h1 { font-size: 1.3rem !important; font-weight: 700 !important; letter-spacing: -0.015em; color: #0f172a; margin: 0 !important; }
+    h2 { font-size: 1.05rem !important; font-weight: 600 !important; color: #1e293b; margin-top: 0.4rem !important; margin-bottom: 0.25rem !important; }
+    h3 { font-size: 0.9rem !important; font-weight: 600 !important; color: #334155; margin-top: 0.3rem !important; margin-bottom: 0.15rem !important; }
+    .dim { color: #94a3b8; font-size: 0.7rem; }
+
+    /* === TABS === */
+    .stTabs [data-baseweb="tab-list"] {
+        gap: 0;
+        border-bottom: 1px solid #e2e8f0;
+        background: transparent;
+    }
     .stTabs [data-baseweb="tab"] {
-        font-size: 0.78rem !important;
-        padding: 7px 20px !important;
-        font-weight: 600;
-        letter-spacing: 0.01em;
+        font-size: 0.75rem !important;
+        padding: 8px 18px !important;
+        font-weight: 500;
+        color: #64748b;
+        border-radius: 6px 6px 0 0 !important;
+        margin-right: 2px;
     }
-    .stTabs [data-baseweb="tab-list"] { gap: 2px; border-bottom: 2px solid #e2e8f0; }
+    .stTabs [data-baseweb="tab"][aria-selected="true"] {
+        color: #0f172a;
+        font-weight: 600;
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-bottom: 2px solid #ffffff;
+    }
 
-    /* Metric cards */
+    /* === METRIC CARDS === */
     .alpha-card {
         background: #ffffff;
         border: 1px solid #e2e8f0;
-        border-radius: 6px;
-        padding: 14px 16px;
-        box-shadow: 0 1px 3px rgba(0,0,0,0.04);
-        transition: box-shadow 0.15s;
+        border-radius: 8px;
+        padding: 12px 14px;
+        box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+        transition: all 0.2s ease;
+        height: 100%;
     }
-    .alpha-card:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+    .alpha-card:hover {
+        box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+        border-color: #cbd5e1;
+        transform: translateY(-1px);
+    }
     .alpha-card .label {
-        font-size: 0.62rem;
+        font-size: 0.6rem;
         color: #94a3b8;
         text-transform: uppercase;
-        letter-spacing: 0.08em;
+        letter-spacing: 0.1em;
         font-weight: 600;
         margin-bottom: 4px;
     }
     .alpha-card .value {
-        font-size: 1.25rem;
+        font-size: 1.2rem;
         font-weight: 700;
         color: #0f172a;
-        line-height: 1.3;
+        line-height: 1.2;
     }
     .alpha-card .sub {
-        font-size: 0.68rem;
+        font-size: 0.65rem;
         color: #64748b;
-        margin-top: 2px;
+        margin-top: 3px;
     }
 
-    /* Verdict banners */
+    /* === VERDICT BANNERS === */
     .verdict {
-        padding: 14px 20px;
-        border-radius: 6px;
-        margin: 12px 0;
-        font-size: 0.9rem;
+        padding: 16px 22px;
+        border-radius: 8px;
+        margin: 14px 0;
+        font-size: 0.88rem;
         line-height: 1.5;
-        font-weight: 500;
     }
-    .verdict.conviction-high { background: #f0fdf4; border-left: 4px solid #16a34a; }
-    .verdict.conviction-moderate { background: #f0f9ff; border-left: 4px solid #2563eb; }
-    .verdict.conviction-selective { background: #fff7ed; border-left: 4px solid #ea580c; }
-    .verdict.conviction-opportunistic { background: #fefce8; border-left: 4px solid #ca8a04; }
-    .verdict.conviction-pass { background: #fef2f2; border-left: 4px solid #dc2626; }
+    .verdict.conviction-high {
+        background: linear-gradient(135deg, #ecfdf5 0%, #f0fdf4 100%);
+        border: 1px solid #a7f3d0;
+        border-left: 4px solid #059669;
+    }
+    .verdict.conviction-moderate {
+        background: linear-gradient(135deg, #eff6ff 0%, #f0f9ff 100%);
+        border: 1px solid #bfdbfe;
+        border-left: 4px solid #2563eb;
+    }
+    .verdict.conviction-selective {
+        background: linear-gradient(135deg, #fff7ed 0%, #fffbf5 100%);
+        border: 1px solid #fed7aa;
+        border-left: 4px solid #ea580c;
+    }
+    .verdict.conviction-opportunistic {
+        background: linear-gradient(135deg, #fefce8 0%, #fffbeb 100%);
+        border: 1px solid #fde68a;
+        border-left: 4px solid #ca8a04;
+    }
+    .verdict.conviction-pass {
+        background: linear-gradient(135deg, #fef2f2 0%, #fff5f5 100%);
+        border: 1px solid #fecaca;
+        border-left: 4px solid #dc2626;
+    }
 
-    /* Tags */
+    /* === TAGS === */
     .tag {
         display: inline-block;
         padding: 3px 10px;
         border-radius: 4px;
-        font-size: 0.68rem;
+        font-size: 0.65rem;
         font-weight: 600;
-        letter-spacing: 0.02em;
+        letter-spacing: 0.03em;
     }
     .tag.green { background: #dcfce7; color: #166534; }
     .tag.red { background: #fee2e2; color: #991b1b; }
@@ -106,78 +155,119 @@ st.markdown("""
     .tag.purple { background: #f3e8ff; color: #6b21a8; }
     .tag.gray { background: #f1f5f9; color: #475569; }
 
-    /* Moat gauge */
+    /* === MOAT GAUGE === */
     .moat-gauge {
         display: flex;
         align-items: center;
-        gap: 10px;
-        padding: 8px 0;
+        gap: 12px;
+        padding: 6px 0;
     }
     .moat-bar {
-        height: 10px;
-        border-radius: 5px;
+        height: 12px;
+        border-radius: 6px;
         background: #e2e8f0;
         flex: 1;
         overflow: hidden;
     }
     .moat-fill {
         height: 100%;
-        border-radius: 5px;
-        transition: width 0.3s;
+        border-radius: 6px;
+        transition: width 0.5s ease;
     }
 
-    /* Divider */
-    hr { margin: 0.5rem 0; border-color: #f1f5f9; }
+    /* === DIVIDERS === */
+    hr { margin: 0.75rem 0; border: none; border-top: 1px solid #e2e8f0; }
 
-    /* DataFrame styling */
+    /* === DATAFRAMES === */
     .stDataFrame {
         font-size: 12px !important;
         border: 1px solid #e2e8f0;
-        border-radius: 6px;
+        border-radius: 8px;
         margin: 8px 0 14px 0;
+        overflow: hidden;
     }
     .stDataFrame th {
-        font-size: 11px !important;
-        padding: 8px 14px !important;
+        font-size: 0.68rem !important;
+        padding: 9px 14px !important;
         background: #f8fafc;
         color: #64748b;
         font-weight: 600;
         text-transform: uppercase;
-        letter-spacing: 0.05em;
+        letter-spacing: 0.06em;
+        border-bottom: 1px solid #e2e8f0;
     }
     .stDataFrame td {
-        font-size: 12px !important;
-        padding: 7px 14px !important;
+        font-size: 0.78rem !important;
+        padding: 8px 14px !important;
         color: #334155;
     }
 
-    /* Section headers */
-    .section-header {
-        font-size: 0.95rem;
-        font-weight: 700;
-        color: #0f172a;
-        margin: 16px 0 8px 0;
-        padding-bottom: 6px;
-        border-bottom: 2px solid #e2e8f0;
-    }
-
-    section[data-testid="stSidebar"] { display: none; }
-    .stApp { margin-top: -1.5rem; }
-    div[data-testid="stVerticalBlock"] { gap: 0.3rem; }
-    div[data-testid="stMetricValue"] { font-size: 0.95rem !important; }
-    div[data-testid="stMetricLabel"] { font-size: 0.7rem !important; }
-
-    small { font-size: 0.82rem; line-height: 1.5; color: #64748b; }
-    a { color: #2563eb; text-decoration: none; }
+    /* === LINKS === */
+    a { color: #2563eb; text-decoration: none; font-weight: 500; }
     a:hover { text-decoration: underline; }
 
-    /* Theme-specific accents */
-    .theme-ai { border-left: 3px solid #8b5cf6; padding-left: 12px; }
-    .theme-energy { border-left: 3px solid #f59e0b; padding-left: 12px; }
-    .theme-health { border-left: 3px solid #10b981; padding-left: 12px; }
-    .theme-software { border-left: 3px solid #3b82f6; padding-left: 12px; }
+    /* === INPUTS === */
+    input, select, .stTextInput>div>div>input {
+        border-radius: 6px !important;
+        border: 1px solid #e2e8f0 !important;
+        font-size: 0.82rem !important;
+        padding: 8px 12px !important;
+    }
+    input:focus, select:focus {
+        border-color: #2563eb !important;
+        box-shadow: 0 0 0 3px rgba(37,99,235,0.1) !important;
+    }
 
-    .dim { color: #94a3b8; font-size: 0.75rem; }
+    /* === BUTTONS === */
+    button {
+        border-radius: 6px !important;
+        font-weight: 500 !important;
+    }
+
+    /* === MOAT DIMENSION CARDS === */
+    .moat-dim-card {
+        background: #ffffff;
+        border-radius: 8px;
+        padding: 16px 18px;
+        box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+        height: 100%;
+    }
+
+    /* === THEME ACCENTS === */
+    .theme-ai { border-left: 3px solid #7c3aed; padding-left: 12px; }
+    .theme-energy { border-left: 3px solid #d97706; padding-left: 12px; }
+    .theme-health { border-left: 3px solid #059669; padding-left: 12px; }
+    .theme-software { border-left: 3px solid #2563eb; padding-left: 12px; }
+
+    /* === FACTOR ATTRIBUTION ROW === */
+    .factor-row {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 9px 14px;
+        margin: 3px 0;
+        background: #ffffff;
+        border: 1px solid #f1f5f9;
+        border-radius: 6px;
+        transition: background 0.15s;
+    }
+    .factor-row:hover { background: #f8fafc; }
+
+    /* === SCROLLBAR === */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: #f1f5f9; }
+    ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
+
+    /* === NOB BANNER === */
+    .nob-banner {
+        padding: 10px 18px;
+        border-radius: 8px;
+        margin: 10px 0;
+        font-size: 0.85rem;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
 </style>
 """, unsafe_allow_html=True)
 
@@ -224,16 +314,31 @@ def moat_bar(rating):
 # ===========================================================================
 # HEADER
 # ===========================================================================
+# ===========================================================================
+# HEADER — dark bar with logo, inputs
+# ===========================================================================
+st.markdown("""
+<div style="background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); margin: -2rem -4rem 0 -4rem; padding: 16px 4rem 14px 4rem;">
+    <div style="display: flex; align-items: center; justify-content: space-between;">
+        <div style="display: flex; align-items: center; gap: 10px;">
+            <span style="font-size: 1.5rem;"></span>
+            <span style="font-size: 1.2rem; font-weight: 700; color: #f8fafc; letter-spacing: -0.02em;">Analytical Alpha</span>
+            <span style="font-size: 0.7rem; font-weight: 500; color: #94a3b8; background: #334155; padding: 3px 10px; border-radius: 4px;">2026</span>
+        </div>
+        <span style="font-size: 0.7rem; color: #64748b;">Strategic Growth Investment Framework</span>
+    </div>
+</div>
+""", unsafe_allow_html=True)
+
+# Input row
 col1, col2, col3, col4 = st.columns([0.4, 0.22, 0.22, 0.16])
 with col1:
-    st.markdown('<h1 style="margin-bottom:0;"> Analytical Alpha <span style="font-weight:400;color:#64748b;font-size:0.9rem;">2026 Framework</span></h1>', unsafe_allow_html=True)
-with col2:
     ticker = st.text_input(
         "Ticker",
-        placeholder="AAPL | QLYS | 3323.HK | D05.SI",
+        placeholder="AAPL  QLYS  3323.HK  D05.SI  NVDA",
         label_visibility="collapsed"
     ).upper().strip()
-with col3:
+with col2:
     framework_options = ['Auto-Detect'] + [v['name'] for v in NoB_TYPES.values()]
     framework_choice = st.selectbox(
         "Framework",
@@ -241,60 +346,85 @@ with col3:
         index=0,
         label_visibility="collapsed"
     )
+with col3:
+    weight_pct = st.number_input("Position %", 0.0, 100.0, 0.0, 0.5, label_visibility="collapsed", placeholder="Position weight %")
 with col4:
     st.markdown('<div style="padding-top:4px;"></div>', unsafe_allow_html=True)
-    weight_pct = st.number_input("Position %", 0.0, 100.0, 0.0, 0.5, label_visibility="collapsed", placeholder="Weight %")
 
 if not ticker:
-    st.markdown("---")
-    c1, c2, c3, c4, c5 = st.columns(5)
+    st.markdown("<br>", unsafe_allow_html=True)
+
+    # Hero section
+    st.markdown("""
+    <div style="text-align:center; padding: 20px 0 10px 0;">
+        <h2 style="font-size:1.5rem !important; font-weight:700; color:#0f172a; margin-bottom:6px;">
+            Strategic Growth Investment Framework
+        </h2>
+        <p style="font-size:0.9rem; color:#64748b; max-width:700px; margin:0 auto;">
+            Nature-of-Business classification with six specialized valuation frameworks,
+            Circumvention Delta moat architecture, and three Master Forward-Looking Indicators.
+        </p>
+    </div>
+    """, unsafe_allow_html=True)
+
+    # Feature cards
+    c1, c2, c3, c4 = st.columns(4)
     with c1:
         st.markdown("""
-        <div class="alpha-card" style="text-align:center;">
-            <div class="label">Dual-Quadrant Analysis</div>
-            <div style="font-size:0.82rem;color:#475569;margin-top:6px;">
-            Quantitative efficiency + Qualitative moat assessment
+        <div class="alpha-card" style="text-align:center; min-height:130px;">
+            <span style="font-size:1.5rem;"></span>
+            <div class="label" style="margin-top:6px;">NoB Classification</div>
+            <div style="font-size:0.78rem;color:#475569;margin-top:4px;">
+            Auto-detects business model: SaaS, Semiconductor, Energy, Biopharma, Value, or Growth
             </div>
         </div>
         """, unsafe_allow_html=True)
     with c2:
         st.markdown("""
-        <div class="alpha-card" style="text-align:center;">
-            <div class="label">2026 Themes</div>
-            <div style="font-size:0.82rem;color:#475569;margin-top:6px;">
-            AI Infra · Energy Renaissance · Healthcare Innovation
+        <div class="alpha-card" style="text-align:center; min-height:130px;">
+            <span style="font-size:1.5rem;"></span>
+            <div class="label" style="margin-top:6px;">Circumvention Delta</div>
+            <div style="font-size:0.78rem;color:#475569;margin-top:4px;">
+            Quantifies competitive moat: Time + Capital + Performance Loss = total competitor burden
             </div>
         </div>
         """, unsafe_allow_html=True)
     with c3:
         st.markdown("""
-        <div class="alpha-card" style="text-align:center;">
-            <div class="label">Risk Management</div>
-            <div style="font-size:0.82rem;color:#475569;margin-top:6px;">
-            10% NAV Rule · Mental Stop-Losses · Barbell Strategy
+        <div class="alpha-card" style="text-align:center; min-height:130px;">
+            <span style="font-size:1.5rem;"></span>
+            <div class="label" style="margin-top:6px;">Forward-Looking</div>
+            <div style="font-size:0.78rem;color:#475569;margin-top:4px;">
+            RPO divergence, NRR installed growth, and Forward Rule of 40 inflection detection
             </div>
         </div>
         """, unsafe_allow_html=True)
     with c4:
         st.markdown("""
-        <div class="alpha-card" style="text-align:center;">
-            <div class="label">Thesis Generation</div>
-            <div style="font-size:0.82rem;color:#475569;margin-top:6px;">
-            AI-generated conviction summary with SHAP-style attribution
+        <div class="alpha-card" style="text-align:center; min-height:130px;">
+            <span style="font-size:1.5rem;"></span>
+            <div class="label" style="margin-top:6px;">2026 Macro Context</div>
+            <div style="font-size:0.78rem;color:#475569;margin-top:4px;">
+            K-shaped economy, value rotation, S&P 7,500 target, and barbell portfolio strategy
             </div>
         </div>
         """, unsafe_allow_html=True)
-    with c5:
-        st.markdown("""
-        <div class="alpha-card" style="text-align:center;">
-            <div class="label">Coverage</div>
-            <div style="font-size:0.82rem;color:#475569;margin-top:6px;">
-            US · SGX (.SI) · HKEX (.HK) · Global
+
+    # Framework quick reference
+    st.markdown("<br>", unsafe_allow_html=True)
+    st.markdown("#### Available Valuation Frameworks")
+    fw_cols = st.columns(6)
+    for i, (key, fw) in enumerate(NoB_TYPES.items()):
+        with fw_cols[i]:
+            st.markdown(f"""
+            <div class="alpha-card" style="text-align:center; border-top:3px solid {fw['color']};">
+                <div class="label">{fw['icon']} {fw['name']}</div>
+                <div style="font-size:0.72rem;color:#64748b;margin-top:4px;line-height:1.4;">{fw['metrics_focus']}</div>
             </div>
-        </div>
-        """, unsafe_allow_html=True)
-    st.markdown("---")
-    st.info("Enter a ticker above to run the full 2026 Strategic Growth Investment Framework analysis. Try: **MU**, **NVDA**, **BE**, **LLY**, or **D05.SI**")
+            """, unsafe_allow_html=True)
+
+    st.markdown("<br>", unsafe_allow_html=True)
+    st.info("Enter a ticker above to begin. Try **QLYS** (High-Growth SaaS), **3323.HK** (Traditional Value), **NVDA** (AI Infra), or **BE** (Energy). Use the Framework dropdown to override auto-detection.")
     st.stop()
 
 
@@ -340,7 +470,6 @@ name = data['name']
 # ===========================================================================
 # TOP BAR — 8 key metrics
 # ===========================================================================
-st.markdown("---")
 moat = qual['moat']
 r40 = quant['rule_of_40']
 gm_data = quant['gross_margin']
@@ -389,9 +518,15 @@ st.markdown(f'<small><b>{name}</b> | {data["sector"]} | {data["industry"]} | {da
 nob_type = result['nob_type']
 nob = result['nob']
 st.markdown(f"""
-<div style="background: {nob['color']}0a; border: 1px solid {nob['color']}40; border-radius: 6px; padding: 10px 16px; margin: 8px 0;">
-    <span style="font-size:1.1rem;font-weight:700;color:{nob['color']};">{nob['icon']} {nob['name']}</span>
-    <span style="font-size:0.78rem;color:#64748b;margin-left:8px;">{nob['description']}</span>
+<div class="nob-banner" style="background: {nob['color']}08; border: 1px solid {nob['color']}30;">
+    <span style="font-size:1.3rem;">{nob['icon']}</span>
+    <div>
+        <div style="font-weight:700; font-size:0.9rem; color:{nob['color']};">{nob['name']}</div>
+        <div style="font-size:0.73rem; color:#64748b;">{nob['description']}</div>
+    </div>
+    <div style="margin-left:auto; font-size:0.68rem; color:#94a3b8; background:#f8fafc; padding:4px 10px; border-radius:4px;">
+        {nob['metrics_focus']}
+    </div>
 </div>
 """, unsafe_allow_html=True)
 
@@ -1405,12 +1540,12 @@ with t7:
 
     if factors:
         for f in factors:
-            dir_color = "#16a34a" if f['Direction'] == 'Bullish' else "#dc2626"
+            dir_color = "#059669" if f['Direction'] == 'Bullish' else ("#64748b" if f['Direction'] == 'Neutral' else "#dc2626")
             st.markdown(f"""
-            <div style="display:flex;align-items:center;gap:12px;padding:8px 12px;margin:4px 0;background:#f8fafc;border-radius:4px;">
-                <span style="font-weight:700;color:{dir_color};min-width:50px;">{f['Impact']}</span>
-                <span style="font-weight:600;font-size:0.82rem;">{f['Factor']}</span>
-                <span style="font-size:0.75rem;color:#64748b;">{f['Detail']}</span>
+            <div class="factor-row">
+                <span style="font-weight:700;color:{dir_color};min-width:55px;font-size:0.85rem;">{f['Impact']}</span>
+                <span style="font-weight:600;font-size:0.8rem;color:#1e293b;min-width:180px;">{f['Factor']}</span>
+                <span style="font-size:0.75rem;color:#64748b;flex:1;">{f['Detail']}</span>
             </div>
             """, unsafe_allow_html=True)
     else:
