@@ -586,10 +586,12 @@ with t1:
     # Thematic
     primary_name = thematic.get('primary_name', 'None')
     primary_conviction = thematic.get('primary_conviction', 0)
+    secondary_themes = ', '.join(t['name'] for t in thematic.get('secondary_themes', []))
 
     # Risk
     risk_max = risk_factors.get('max_suggested_position', 10)
     position = risk_mgmt['position_sizing']
+    barbell = risk_mgmt['barbell_check']
 
     # Build compact table
     summary_html = (
@@ -609,7 +611,8 @@ with t1:
         # Quantitative column
         + '<td style="padding:5px 10px; font-size:0.7rem; line-height:1.5;">'
         + '<br>'.join(q_metrics)
-        + '<br><span style="color:#94a3b8;">Fwd R40 ' + (f'{fwd_r40_val_ov:.0f}' if fwd_r40_val_ov is not None else 'N/A') + ' &mdash; ' + fwd_inflection_ov + '</span>'
+        + '<br><span style="font-size:0.63rem; color:#888;">Fwd R40 ' + (f'{fwd_r40_val_ov:.0f}' if fwd_r40_val_ov is not None else 'N/A') + ' &mdash; ' + fwd_inflection_ov + '</span>'
+        + '<br><span style="font-size:0.63rem; color:#888;">RPO: ' + rpo_signal_ov + '</span>'
         + '</td>'
 
         # Moat column
@@ -618,21 +621,23 @@ with t1:
         + f'Efficiency: <b>{efficiency["score"]}/5</b><br>'
         + f'Trust: <b>{trust["score"]}/5</b><br>'
         + f'<b>Composite: {moat_val}/10</b><br>'
-        + f'<span style="font-size:0.65rem; color:#64748b;">{moat["moat_label"]}</span><br>'
-        + f'<span style="font-size:0.65rem; color:#64748b;">Trend: {perf_sig}</span>'
+        + f'<span style="font-size:0.63rem; color:#888;">{moat["moat_label"]}</span><br>'
+        + f'<span style="font-size:0.63rem; color:#888;">Trend: {perf_sig}</span>'
         + '</td>'
 
-        # Thematic column
+        # Thematic column — with secondary themes
         + '<td style="padding:5px 10px; font-size:0.7rem; line-height:1.5;">'
         + f'Primary: <b>{primary_name}</b> ({primary_conviction}/10)<br>'
-        + f'<span style="font-size:0.65rem; color:#64748b;">{thematic.get("primary_catalyst", "")}</span>'
+        + (f'Secondary: <b>{secondary_themes}</b><br>' if secondary_themes else '')
+        + f'<span style="font-size:0.63rem; color:#888;">{thematic.get("primary_catalyst", "")}</span>'
         + '</td>'
 
-        # Risk column
+        # Risk column — with stop-loss + barbell
         + '<td style="padding:5px 10px; font-size:0.7rem; line-height:1.5;">'
         + f'Risk: <b>{risk_level}</b> ({risk_factors.get("risk_score", 0)})<br>'
         + f'Max: <b>{risk_max}% NAV</b><br>'
-        + f'<span style="font-size:0.65rem; color:#64748b;">{position["action"]}</span>'
+        + f'<span style="font-size:0.63rem; color:#888;">{position["action"]}</span><br>'
+        + f'<span style="font-size:0.63rem; color:#888;">Barbell: {barbell.get("message", "")}</span>'
         + '</td>'
 
         + '</tr></tbody></table>'
